@@ -1,0 +1,177 @@
+.layout {
+  display: flex;
+  min-height: 100vh;
+}
+.contenido {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  margin-left: 260px;
+  min-width: 0;
+}
+/* La barra superior ahora lleva las pestañas al lado derecho */
+.barra-superior {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background-color: #FFFFFF;
+  border-bottom: 1px solid #D9C4A9;
+  padding: 20px 32px;
+  flex-wrap: wrap;
+  gap: 16px;
+  position: sticky;
+  top: 0;
+  z-index: 5;
+}
+.pestanas {
+  display: flex;
+  gap: 4px;
+  border: 1px solid #C4A87F;
+  border-radius: 8px;
+  padding: 4px;
+  background-color: #FBF3E7;
+}
+.pestanas button {
+  background: none;
+  border: none;
+  padding: 8px 18px;
+  font-size: 14px;
+  color: #3B2A1F;
+  cursor: pointer;
+  border-radius: 6px;
+}
+.pestanas button:hover {
+  background-color: #EDE0CE;
+}
+/* Estilo del botón de la sección que se está viendo */
+.pestanas button.activa {
+  background-color: #4A3427;
+  color: #E8A33D;
+  font-weight: 600;
+}
+/* Galería de credenciales */
+.galeria-credenciales {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: 20px;
+}
+.credencial {
+  background-color: #D9B98C;
+  border-radius: 12px;
+  padding: 16px;
+  text-align: center;
+}
+.foto-credencial {
+  background-color: #FFFFFF;
+  border-radius: 10px;
+  height: 130px;
+  overflow: hidden;
+  margin-bottom: 12px;
+}
+/* object-fit: cover recorta la foto para llenar el espacio sin deformarla */
+.foto-credencial img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+.nombre-credencial {
+  font-size: 14px;
+  font-weight: 600;
+  color: #3B2A1F;
+}
+.puesto-credencial {
+  font-size: 13px;
+  color: #6B5443;
+}
+.marca {
+  font-size: 20px;
+  font-weight: 500;
+  color: #3B2A1F;
+}
+.cuerpo {
+  padding: 32px;
+  flex: 1;
+  min-width: 640px;
+}
+.titulo-seccion {
+  font-size: 17px;
+  font-weight: 500;
+  margin-bottom: 12px;
+}
+.btn-principal {
+  background-color: #C0472B;
+  color: #FFFFFF;
+  border: none;
+  border-radius: 6px;
+  padding: 10px 20px;
+  font-size: 14px;
+  cursor: pointer;
+}
+.btn-principal:hover {
+  background-color: #A63C23;
+}
+.tabla-scroll {
+  overflow-x: auto;
+}
+table {
+  width: 100%;
+  border-collapse: collapse;
+  background-color: #FFFFFF;
+}
+th {
+  background-color: #D9B98C;
+  padding: 12px;
+  text-align: center;
+  font-weight: 500;
+  border: 1px solid #C4A87F;
+}
+td {
+  padding: 14px 12px;
+  border: 1px solid #E0D3C0;
+  text-align: center;
+  height: 52px;
+}
+.encabezado-seccion {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 12px;
+}
+.enlace-accion {
+  color: #3B2A1F;
+  font-size: 13px;
+  cursor: pointer;
+}
+.enlace-accion:hover {
+  text-decoration: underline;
+  color: #C0472B;
+}
+.campo-fecha {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.campo-fecha label {
+  font-size: 13px;
+}
+.campo-fecha input {
+  padding: 8px 12px;
+  border: 1px solid #C4A87F;
+  border-radius: 6px;
+  background-color: #FFFFFF;
+  font-size: 14px;
+}
+.campo-fecha input:focus {
+  outline: 2px solid #C0472B;
+}
+.fila-boton {
+  display: flex;
+  margin-top: 16px;
+}
+td input[type="checkbox"] {
+  width: 18px;
+  height: 18px;
+  accent-color: #C0472B;
+  cursor: pointer;
+}

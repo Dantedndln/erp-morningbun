@@ -1,0 +1,157 @@
+.pantalla-catalogo {
+  min-height: 100vh;
+  background-color: #FBF3E7;
+}
+.barra-cliente {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background-color: #FFFFFF;
+  border-bottom: 1px solid #D9C4A9;
+  padding: 20px 32px;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+.izquierda {
+  display: flex;
+  align-items: baseline;
+  gap: 20px;
+  flex-wrap: wrap;
+}
+.marca {
+  font-size: 20px;
+  font-weight: 600;
+  color: #3B2A1F;
+}
+.lema {
+  font-size: 13px;
+  color: #8A7462;
+  font-style: italic;
+}
+.acciones {
+  display: flex;
+  gap: 24px;
+}
+.enlace-barra {
+  font-size: 14px;
+  color: #3B2A1F;
+  text-decoration: none;
+  cursor: pointer;
+}
+.enlace-barra:hover {
+  color: #C0472B;
+}
+.banner {
+  height: 260px;
+  background-image: url('/banner.jpg');
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  background-attachment: fixed;
+  border-bottom: 1px solid #D9C4A9;
+}
+.contenido-catalogo {
+  padding: 32px;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+.categorias {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+  margin-bottom: 16px;
+}
+.chip {
+  background-color: #FFFFFF;
+  border: 1px solid #C4A87F;
+  border-radius: 20px;
+  padding: 10px 22px;
+  font-size: 13px;
+  color: #3B2A1F;
+  cursor: pointer;
+}
+.chip:hover {
+  background-color: #EDE0CE;
+}
+.buscador {
+  margin-bottom: 24px;
+}
+.buscador input {
+  width: 100%;
+  padding: 12px 18px;
+  border: 1px solid #C4A87F;
+  border-radius: 20px;
+  background-color: #FFFFFF;
+  font-size: 14px;
+}
+.buscador input:focus {
+  outline: 2px solid #C0472B;
+}
+.galeria {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(210px, 1fr));
+  gap: 20px;
+}
+.tarjeta-producto {
+  background-color: #FFFFFF;
+  border: 1px solid #D9C4A9;
+  border-radius: 10px;
+  overflow: hidden;
+}
+.imagen {
+  width: 100%;
+  height: 130px;
+  object-fit: cover;
+  display: block;
+  background-color: #F3E7D6;
+}
+.datos {
+  padding: 12px 14px;
+  border-top: 1px solid #D9C4A9;
+}
+.nombre {
+  font-size: 14px;
+  margin-bottom: 10px;
+  min-height: 18px;
+}
+.fila-precio {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.precio {
+  font-size: 15px;
+  font-weight: 600;
+  min-height: 20px;
+}
+.btn-agregar {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  border: none;
+  background-color: #C0472B;
+  color: #FFFFFF;
+  font-size: 18px;
+  line-height: 1;
+  cursor: pointer;
+}
+.btn-agregar:hover {
+  background-color: #A63C23;
+}
+.fila-boton {
+  display: flex;
+  justify-content: flex-end;
+  margin-top: 28px;
+}
+.btn-principal {
+  background-color: #C0472B;
+  color: #FFFFFF;
+  border: none;
+  border-radius: 6px;
+  padding: 12px 28px;
+  font-size: 15px;
+  cursor: pointer;
+}
+.btn-principal:hover {
+  background-color: #A63C23;
+}

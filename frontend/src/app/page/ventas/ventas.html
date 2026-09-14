@@ -1,0 +1,100 @@
+<div class="layout">
+  <app-navbar />
+
+  <main class="contenido">
+    <header class="barra-superior">
+      <h1 class="marca">MorningBun</h1>
+
+      <nav class="pestanas">
+        <button [class.activa]="seccion() === 'venta'" (click)="seccion.set('venta')">Venta</button>
+        <button [class.activa]="seccion() === 'historial'" (click)="seccion.set('historial')">Historial</button>
+      </nav>
+    </header>
+
+    <section class="cuerpo">
+
+      <!-- sección de registrar venta (catálogo de productos) -->
+      @if (seccion() === 'venta') {
+        <h2 class="titulo-seccion">Registrar venta</h2>
+
+        <!-- Los chips de categoría son estáticos por ahora; el filtrado
+             se implementará junto con la lógica de la venta c; -->
+        <div class="categorias">
+          <button class="chip">Café</button>
+          <button class="chip">Desayunos</button>
+          <button class="chip">Panadería</button>
+          <button class="chip">Malteadas</button>
+          <button class="chip">Helados</button>
+          <button class="chip">Granos</button>
+          <button class="chip">Extras</button>
+        </div>
+
+        <div class="buscador">
+          <input type="text" placeholder="Buscar producto...">
+        </div>
+
+        <div class="galeria">
+          @for (producto of productos(); track producto.id) {
+            <article class="tarjeta-producto">
+              <!-- Si el producto no tiene imagen registrada se usa una de respaldo -->
+              <img
+                class="imagen"
+                [src]="producto.imagen ? '/' + producto.imagen : '/sin-imagen.png'"
+                [alt]="producto.nombre">
+
+              <div class="datos">
+                <p class="nombre">{{ producto.nombre }}</p>
+                <div class="fila-precio">
+                  <span class="precio">{{ producto.precio }}</span>
+                  <button class="btn-agregar">+</button>
+                </div>
+              </div>
+            </article>
+          } @empty {
+            <p>No hay productos disponibles</p>
+          }
+        </div>
+
+        <div class="fila-boton">
+          <button class="btn-principal">Datos de la venta</button>
+        </div>
+      }
+
+      <!-- sección de historial de ventas -->
+      @if (seccion() === 'historial') {
+        <h2 class="titulo-seccion">Historial de ventas</h2>
+        <div class="tabla-scroll">
+          <table>
+            <thead>
+              <tr>
+                <th>Id</th>
+                <th>Fecha</th>
+                <th>Registrado por</th>
+                <th>Cliente</th>
+                <th>Total</th>
+                <th>Acciones</th>
+              </tr>
+            </thead>
+            <tbody>
+              @for (venta of ventas(); track venta.id) {
+                <tr>
+                  <td>{{ venta.id }}</td>
+                  <!-- El pipe date convierte la fecha ISO a formato legible -->
+                  <td>{{ venta.fecha | date:'dd/MM/yyyy' }}</td>
+                  <td>{{ venta.registradoPor }}</td>
+                  <td>{{ venta.cliente }}</td>
+                  <td>{{ venta.total }}</td>
+                  <td><span class="enlace-accion">Ver detalle</span></td>
+                </tr>
+              } @empty {
+                <tr>
+                  <td colspan="6">No hay ventas registradas</td>
+                </tr>
+              }
+            </tbody>
+          </table>
+        </div>
+      }
+    </section>
+  </main>
+</div>

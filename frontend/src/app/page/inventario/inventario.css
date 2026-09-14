@@ -1,0 +1,73 @@
+.layout {
+  display: flex;
+  min-height: 100vh;
+}
+.contenido {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  margin-left: 260px;
+  min-width: 0;
+}
+.barra-superior {
+  background-color: #FFFFFF;
+  border-bottom: 1px solid #D9C4A9;
+  padding: 20px 32px;
+}
+.marca {
+  font-size: 20px;
+  font-weight: 500;
+  color: #3B2A1F;
+}
+.cuerpo {
+  padding: 32px;
+  flex: 1;
+  min-width: 640px;
+}
+.btn-principal {
+  background-color: #C0472B;
+  color: #FFFFFF;
+  border: none;
+  border-radius: 6px;
+  padding: 10px 20px;
+  font-size: 14px;
+  cursor: pointer;
+}
+.btn-principal:hover {
+  background-color: #A63C23;
+}
+.tabla-scroll {
+  overflow-x: auto;
+}
+table {
+  width: 100%;
+  border-collapse: collapse;
+  background-color: #FFFFFF;
+}
+th {
+  background-color: #D9B98C;
+  padding: 12px;
+  text-align: center;
+  font-weight: 500;
+  border: 1px solid #C4A87F;
+}
+td {
+  padding: 14px 12px;
+  border: 1px solid #E0D3C0;
+  text-align: center;
+  height: 52px;
+}
+.fila-acciones {
+  display: flex;
+  justify-content: flex-end;
+  margin-bottom: 20px;
+}
+.enlace-accion {
+  color: #3B2A1F;
+  font-size: 13px;
+  cursor: pointer;
+}
+.enlace-accion:hover {
+  text-decoration: underline;
+  color: #C0472B;
+}

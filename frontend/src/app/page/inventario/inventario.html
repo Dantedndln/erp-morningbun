@@ -1,0 +1,37 @@
+<div class="layout">
+  <app-navbar />
+  <main class="contenido">
+    <header class="barra-superior">
+      <h1 class="marca">MorningBun</h1>
+    </header>
+    <section class="cuerpo">
+      <div class="fila-acciones">
+        <button class="btn-principal">Nuevo producto</button>
+      </div>
+      <div class="tabla-scroll">
+        <table>
+          <thead>
+            <tr>
+              <th>Nombre</th>
+              <th>Categoría</th>
+              <th>Precio</th>
+              <th>Stock</th>
+              <th>Acciones</th>
+            </tr>
+          </thead>
+          <tbody>
+            @for (producto of productos(); track producto.id){
+              <tr>
+              <td>{{ producto.nombre }}</td>
+              <td>{{ producto.categoria }}</td>
+              <td>{{ producto.precio }}</td>
+              <td>{{producto.stock}}</td>
+              <td><span class="enlace-accion">Ver detalles</span></td>
+            </tr>
+            }
+          </tbody>
+        </table>
+      </div>
+    </section>
+  </main>
+</div>

@@ -1,0 +1,174 @@
+.layout {
+  display: flex;
+  min-height: 100vh;
+}
+.contenido {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  margin-left: 260px;
+  min-width: 0;
+}
+.barra-superior {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background-color: #FFFFFF;
+  border-bottom: 1px solid #D9C4A9;
+  padding: 20px 32px;
+  flex-wrap: wrap;
+  gap: 16px;
+}
+
+.pestanas {
+  display: flex;
+  gap: 4px;
+  border: 1px solid #C4A87F;
+  border-radius: 8px;
+  padding: 4px;
+  background-color: #FBF3E7;
+}
+
+.pestanas button {
+  background: none;
+  border: none;
+  padding: 8px 18px;
+  font-size: 14px;
+  color: #3B2A1F;
+  cursor: pointer;
+  border-radius: 6px;
+}
+
+.pestanas button:hover {
+  background-color: #EDE0CE;
+}
+
+.pestanas button.activa {
+  background-color: #4A3427;
+  color: #E8A33D;
+  font-weight: 600;
+}
+.marca {
+  font-size: 20px;
+  font-weight: 500;
+  color: #3B2A1F;
+}
+.cuerpo {
+  padding: 32px;
+  flex: 1;
+  min-width: 640px;
+}
+.titulo-seccion {
+  font-size: 17px;
+  font-weight: 500;
+  margin-bottom: 12px;
+}
+.titulo-seccion.espaciado {
+  margin-top: 36px;
+}
+.btn-principal {
+  background-color: #C0472B;
+  color: #FFFFFF;
+  border: none;
+  border-radius: 6px;
+  padding: 10px 20px;
+  font-size: 14px;
+  cursor: pointer;
+}
+.btn-principal:hover {
+  background-color: #A63C23;
+}
+.tabla-scroll {
+  overflow-x: auto;
+}
+table {
+  width: 100%;
+  border-collapse: collapse;
+  background-color: #FFFFFF;
+}
+th {
+  background-color: #D9B98C;
+  padding: 12px;
+  text-align: center;
+  font-weight: 500;
+  border: 1px solid #C4A87F;
+}
+td {
+  padding: 14px 12px;
+  border: 1px solid #E0D3C0;
+  text-align: center;
+  height: 52px;
+}
+.encabezado-seccion {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 12px;
+}
+.enlace-accion {
+  color: #3B2A1F;
+  font-size: 13px;
+  cursor: pointer;
+}
+.enlace-accion:hover {
+  text-decoration: underline;
+  color: #C0472B;
+}
+.panel-compra {
+  background-color: #FFFFFF;
+  border: 1px solid #D9C4A9;
+  border-radius: 12px;
+  padding: 24px;
+}
+.fila-campos {
+  display: flex;
+  gap: 20px;
+  margin-bottom: 20px;
+  flex-wrap: wrap;
+}
+.fila-campos.alinear-abajo {
+  align-items: flex-end;
+}
+.campo {
+  display: flex;
+  flex-direction: column;
+}
+.campo label {
+  font-size: 13px;
+  margin-bottom: 6px;
+}
+.campo select,
+.campo input {
+  padding: 8px 12px;
+  border: 1px solid #C4A87F;
+  border-radius: 6px;
+  background-color: #FFFFFF;
+  font-size: 14px;
+  min-width: 200px;
+}
+.campo-chico select,
+.campo-chico input {
+  min-width: 120px;
+}
+.campo select:focus,
+.campo input:focus {
+  outline: 2px solid #C0472B;
+}
+.tabla-renglones {
+  margin-bottom: 20px;
+}
+.quitar {
+  color: #C0472B;
+  font-weight: bold;
+  cursor: pointer;
+}
+.pie-compra {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  gap: 24px;
+}
+.total {
+  font-size: 17px;
+  font-weight: 600;
+}

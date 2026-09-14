@@ -1,0 +1,40 @@
+.sidebar {
+  width: 260px;
+  height: 100vh;
+  position: fixed;
+  top: 0;
+  left: 0;
+  overflow-y: auto;
+  background-color: #F7EFE3;
+  border-right: 1px solid #D9C4A9;
+  padding-top: 32px;
+  z-index: 10;
+}
+.menu {
+  display: flex;
+  flex-direction: column;
+}
+.menu a {
+  padding: 16px 24px;
+  color: #3B2A1F;
+  text-decoration: none;
+  font-size: 15px;
+  transition: background-color 0.2s;
+}
+.menu a:hover {
+  background-color: #EDE0CE;
+}
+.menu a.activo {
+  background-color: #4A3427;
+  color: #E8A33D;
+  font-weight: 600;
+}
+.menu a.cerrar-sesion {
+  color: #C0472B;
+  text-decoration: underline;
+  margin-top: 8px;
+}
+.menu a.cerrar-sesion:hover {
+  background-color: transparent;
+  color: #9B3820;
+}

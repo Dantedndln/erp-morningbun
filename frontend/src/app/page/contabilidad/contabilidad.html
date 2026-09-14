@@ -1,0 +1,102 @@
+<div class="layout">
+  <app-navbar />
+
+  <main class="contenido">
+    <header class="barra-superior">
+      <h1 class="marca">MorningBun</h1>
+
+      <nav class="pestanas">
+        <button [class.activa]="seccion() === 'resumen'" (click)="seccion.set('resumen')">Ingresos/Egresos</button>
+        <button [class.activa]="seccion() === 'registro'" (click)="seccion.set('registro')">Registro general</button>
+      </nav>
+    </header>
+
+    <section class="cuerpo">
+
+      <!-- sección de la gráfica y totales -->
+      @if (seccion() === 'resumen') {
+        <div class="encabezado-seccion">
+          <h2 class="titulo-seccion">Ingresos y egresos del periodo</h2>
+          <div class="campo-fecha">
+            <label for="periodo">Periodo</label>
+            <input type="month" id="periodo" name="periodo">
+          </div>
+        </div>
+
+        <!-- La gráfica se dibuja con CSS: la altura de cada barra se calcula
+             en el componente y se aplica con [style.height.px] -->
+        <div class="grafica">
+          <div class="grupo-barras">
+            <div class="par">
+              <div class="barra egreso" [style.height.px]="alturaEgresos()"></div>
+              <div class="barra ingreso" [style.height.px]="alturaIngresos()"></div>
+            </div>
+            <p class="etiqueta-dia">Total acumulado</p>
+          </div>
+        </div>
+
+        <div class="leyenda">
+          <span class="muestra egreso"></span> Egreso
+          <span class="muestra ingreso"></span> Ingreso
+        </div>
+
+        <div class="tarjetas">
+          <article class="tarjeta-resumen">
+            <p class="etiqueta">Ingreso del periodo</p>
+            <p class="monto">{{ resumen().ingresos }}</p>
+          </article>
+
+          <article class="tarjeta-resumen">
+            <p class="etiqueta">Egreso del periodo</p>
+            <p class="monto">{{ resumen().egresos }}</p>
+          </article>
+
+          <article class="tarjeta-resumen">
+            <p class="etiqueta">Balance del periodo</p>
+            <!-- El balance se pinta en verde si es positivo y en rojo si es negativo -->
+            <p class="monto" [class.positivo]="resumen().balance >= 0" [class.negativo]="resumen().balance < 0">
+              {{ resumen().balance }}
+            </p>
+          </article>
+        </div>
+      }
+
+      <!-- sección de registro general de movimientos -->
+      @if (seccion() === 'registro') {
+        <h2 class="titulo-seccion">Registro general de movimientos</h2>
+
+        <div class="tabla-scroll">
+          <table>
+            <thead>
+              <tr>
+                <th>Fecha</th>
+                <th>Tipo</th>
+                <th>Origen</th>
+                <th>Referencia</th>
+                <th>Monto</th>
+              </tr>
+            </thead>
+            <tbody>
+              <!-- $index se usa como identificador porque los movimientos vienen
+                   de tres tablas distintas y no tienen un id único entre sí -->
+              @for (movimiento of movimientos(); track $index) {
+                <tr>
+                  <td>{{ movimiento.fecha | date:'dd/MM/yyyy' }}</td>
+                  <td>{{ movimiento.tipo }}</td>
+                  <td>{{ movimiento.origen }}</td>
+                  <td>{{ movimiento.referencia }}</td>
+                  <td>{{ movimiento.monto }}</td>
+                </tr>
+              } @empty {
+                <tr>
+                  <td colspan="5">No hay movimientos registrados</td>
+                </tr>
+              }
+            </tbody>
+          </table>
+        </div>
+      }
+
+    </section>
+  </main>
+</div>
