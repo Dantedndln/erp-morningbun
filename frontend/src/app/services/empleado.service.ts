@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
-import { Empleado, Asistencia, Pago } from '../models/empleado.model';
+import { Empleado, Pago } from '../models/empleado.model';
 
 @Injectable({
   providedIn: 'root'// disponible en toda la app sin declararlo en cada componente
@@ -17,10 +17,6 @@ export class EmpleadoService {
 
   obtenerEmpleados(): Observable<Empleado[]> {
     return this.http.get<Empleado[]>(this.api);
-  }
-
-  obtenerAsistencia(): Observable<Asistencia[]> {
-    return this.http.get<Asistencia[]>(`${this.api}/asistencia`);
   }
 
   obtenerPagos(): Observable<Pago[]> {

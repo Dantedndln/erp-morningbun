@@ -125,3 +125,38 @@ td {
   border: 1px solid #E0D3C0;
   text-align: center;
 }
+.formulario {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
+}
+.casilla-terminos {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  font-size: 12px;
+  text-align: left;
+  max-width: 280px;
+  margin-bottom: 16px;
+}
+.casilla-terminos input {
+  width: auto;
+  margin: 3px 0 0 0;
+  accent-color: #C0472B;
+}
+.casilla-terminos a {
+  color: #C0472B;
+}
+.mensaje-error {
+  color: #C0472B;
+  font-size: 13px;
+  margin-bottom: 12px;
+  text-align: center;
+}
+.mensaje-exito {
+  color: #3F7A4A;
+  font-size: 13px;
+  margin-bottom: 12px;
+  text-align: center;
+}

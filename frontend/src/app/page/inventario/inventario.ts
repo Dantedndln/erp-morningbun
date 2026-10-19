@@ -11,6 +11,8 @@ import { Producto } from '../../models/producto.model';
 })
 export class Inventario implements OnInit{
   productos = signal <Producto[]>([]);
+  //signal se usa para no perder los datos del inventario cuando se cambia de sección y se regresa a la misma. Esto me estuvo pasando mucho y 
+  //de hecho aquí fue el lugar donde empecé a usar signal, y me di cuenta de que era muy útil c:
   constructor (private productoService: ProductoService) {}
   ngOnInit(): void{
     this.productoService.obtenerProductos().subscribe({

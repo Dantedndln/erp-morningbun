@@ -13,29 +13,6 @@ function obtenerEmpleados(callback) {
   });
 }
 
-// Trae la asistencia junto con el nombre y puesto del empleado.
-// El JOIN sirve para no mostrar solo el empleado_id, que al usuario no le dice nada.
-function obtenerAsistencia(callback) {
-  const sql = `
-    SELECT
-      a.id,
-      e.nombre,
-      e.puesto,
-      a.fecha,
-      a.asistio
-    FROM asistencia a
-    LEFT JOIN empleados e ON a.empleado_id = e.id
-    ORDER BY a.fecha DESC
-  `;
-  db.query(sql, (error, resultados) => {
-    if (error) {
-      callback(error, null);
-      return;
-    }
-    callback(null, resultados);
-  });
-}
-
 // Trae el historial de pagos, también con el nombre y puesto del empleado
 function obtenerPagos(callback) {
   const sql = `
@@ -44,7 +21,7 @@ function obtenerPagos(callback) {
       e.nombre,
       e.puesto,
       p.fecha,
-      p.dias_asistidos,
+      p.dias_laborados,
       p.monto
     FROM pagos p
     LEFT JOIN empleados e ON p.empleado_id = e.id
@@ -61,6 +38,5 @@ function obtenerPagos(callback) {
 
 module.exports = {
   obtenerEmpleados,
-  obtenerAsistencia,
   obtenerPagos
 };

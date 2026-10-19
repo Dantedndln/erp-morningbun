@@ -29,6 +29,7 @@
   color: #E8A33D;
   font-weight: 600;
 }
+/* Para que "cerrar sesión" llame la atención */
 .menu a.cerrar-sesion {
   color: #C0472B;
   text-decoration: underline;
@@ -37,4 +38,21 @@
 .menu a.cerrar-sesion:hover {
   background-color: transparent;
   color: #9B3820;
+}
+.menu a.cerrar-sesion {
+  cursor: pointer;
+}
+/* enlaces más pequeños y discretos que los módulos, pero visibles desde cualquier pantalla del administrador */
+.menu a.enlace-legal {
+  font-size: 12px;
+  color: #3B2A1F;
+  text-decoration: underline;
+  padding: 30px 24px 2px;
+}
+.menu a.enlace-legal:first-of-type {
+  margin-top: 10px;
+}
+.menu a.enlace-legal:hover {
+  background-color: transparent;
+  color: #C0472B;
 }

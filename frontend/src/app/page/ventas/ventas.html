@@ -81,7 +81,7 @@
                   <td>{{ venta.id }}</td>
                   <!-- El pipe date convierte la fecha ISO a formato legible -->
                   <td>{{ venta.fecha | date:'dd/MM/yyyy' }}</td>
-                  <td>{{ venta.registradoPor }}</td>
+                  <td>{{ venta.registradoPor | titlecase }}</td>
                   <td>{{ venta.cliente }}</td>
                   <td>{{ venta.total }}</td>
                   <td><span class="enlace-accion">Ver detalle</span></td>

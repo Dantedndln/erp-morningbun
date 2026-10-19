@@ -7,7 +7,7 @@ export interface Movimiento {
   monto: number;
 }
 
-// Totales del periodo
+// totales del periodo
 export interface Resumen {
   ingresos: number;
   egresos: number;

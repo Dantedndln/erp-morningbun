@@ -15,10 +15,12 @@ import { Producto } from '../../models/producto.model';
   templateUrl: './compras.html',
 })
 export class Compras implements OnInit{
+  //signal se usa para poder conservar los elementos de las secciones aunque se cambie de sección, y para poder reaccionar a los cambios de datos que llegan del backend
   proveedores = signal <Proveedor[]>([]);
   compras = signal <Compra[]>([]);
   productos = signal <Producto[]>([]);
   seccion = signal<'compra' | 'distribuidores' | 'historial'>('compra');
+  // se inyectan los tres servicios: uno para los proveedores, otro para las compras y otro para los productos
   constructor(
     private proveedorService: ProveedorService,
     private compraService: CompraService,

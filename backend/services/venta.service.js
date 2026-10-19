@@ -7,19 +7,17 @@ const db = require('../config/db');
 function obtenerVentas(callback) {
   const sql = `
     SELECT
-      id,
-      cliente,
-      registrado_por AS registradoPor,
-      fecha,
-      total
-    FROM ventas
-    ORDER BY fecha DESC
+      v.id,
+      v.cliente_nombre AS cliente,
+      u.rol AS registradoPor,
+      v.fecha,
+      v.total
+    FROM ventas v
+    LEFT JOIN usuarios u ON v.usuario_id = u.id
+    ORDER BY v.fecha DESC
   `;
   db.query(sql, (error, resultados) => {
-    if (error) {
-      callback(error, null);
-      return;
-    }
+    if (error) { callback(error, null); return; }
     callback(null, resultados);
   });
 }

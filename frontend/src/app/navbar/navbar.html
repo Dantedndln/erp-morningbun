@@ -5,6 +5,8 @@
     <a routerLink="/ventas" routerLinkActive="activo">Ventas y facturación</a>
     <a routerLink="/compras" routerLinkActive="activo">Compras</a>
     <a routerLink="/rrhh" routerLinkActive="activo">Recursos humanos</a>
-    <a routerLink="/" class="cerrar-sesion">Cerrar sesión</a>
+    <a class="cerrar-sesion" (click)="cerrarSesion()">Cerrar sesión</a>
+    <a routerLink="/privacidad" class="enlace-legal">Aviso de privacidad</a>
+    <a routerLink="/terminos" class="enlace-legal">Términos y condiciones</a>
   </nav>
 </aside>

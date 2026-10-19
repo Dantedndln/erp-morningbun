@@ -1,7 +1,6 @@
 const db = require('../config/db');
-// Une ventas, compras y pagos en un solo listado de movimientos
-// UNION ALL apila los resultados de las tres consultas, siempre que
-// cada una devuelva el mismo número de columnas con los mismos nombres
+//Une ventas, compras y pagos en un solo listado de movimientos
+//UNION ALL apila los resultados de las tres consultas, siempre que cada una devuelva el mismo número de columnas con los mismos nombres
 function obtenerMovimientos(callback) {
   const sql = `
     SELECT
@@ -59,7 +58,7 @@ function obtenerResumen(callback) {
       return;
     }
 
-    // La consulta devuelve un arreglo con una sola fila
+    //La consulta devuelve un arreglo con una sola fila
     const fila = resultados[0];
     const ingresos = Number(fila.ingresos);
     const egresos = Number(fila.egresos);

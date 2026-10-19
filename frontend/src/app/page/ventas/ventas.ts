@@ -5,8 +5,9 @@ import { VentaService } from '../../services/venta.service';
 import { ProductoService } from '../../services/producto.service';
 import { Venta } from '../../models/venta.model';
 import { Producto } from '../../models/producto.model';
+import {TitleCasePipe} from "@angular/common";
 @Component({
-  imports: [Navbar, DatePipe],
+  imports: [Navbar, DatePipe, TitleCasePipe],
   selector: 'app-ventas',
   styleUrl: './ventas.css',
   templateUrl: './ventas.html',

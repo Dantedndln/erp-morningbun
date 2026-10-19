@@ -7,4 +7,7 @@ export interface Producto {
   precio: number;
   stock: number;
   imagen: string;
+  vigente: number;
+  fecha_alta: string;
+  fecha_baja: string | null;
 }

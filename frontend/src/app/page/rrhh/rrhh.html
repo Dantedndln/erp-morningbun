@@ -10,7 +10,6 @@
       <nav class="pestanas">
         <button [class.activa]="seccion() === 'empleados'" (click)="seccion.set('empleados')">Empleados</button>
         <button [class.activa]="seccion() === 'credenciales'" (click)="seccion.set('credenciales')">Credenciales</button>
-        <button [class.activa]="seccion() === 'asistencia'" (click)="seccion.set('asistencia')">Asistencia</button>
         <button [class.activa]="seccion() === 'pagos'" (click)="seccion.set('pagos')">Pagos</button>
       </nav>
     </header>
@@ -21,7 +20,6 @@
       @if (seccion() === 'empleados') {
         <div class="encabezado-seccion">
           <h2 class="titulo-seccion">Empleados</h2>
-          <button class="btn-principal">Nuevo empleado</button>
         </div>
 
         <div class="tabla-scroll">
@@ -32,7 +30,6 @@
                 <th>Puesto</th>
                 <th>Salario</th>
                 <th>Teléfono</th>
-                <th>Acciones</th>
               </tr>
             </thead>
             <tbody>
@@ -44,7 +41,6 @@
                   <td>{{ empleado.puesto }}</td>
                   <td>{{ empleado.salario }}</td>
                   <td>{{ empleado.telefono }}</td>
-                  <td><span class="enlace-accion">Editar / Eliminar</span></td>
                 </tr>
               } @empty {
                 <!-- @empty se muestra solo si el arreglo viene vacío -->
@@ -79,61 +75,10 @@
         </div>
       }
 
-      <!-- sección de asistencia -->
-      @if (seccion() === 'asistencia') {
-        <div class="encabezado-seccion">
-          <h2 class="titulo-seccion">Asistencia</h2>
-          <div class="campo-fecha">
-            <label for="fecha-asistencia">Fecha</label>
-            <input type="date" id="fecha-asistencia" name="fecha-asistencia">
-          </div>
-        </div>
-
-        <div class="tabla-scroll">
-          <table>
-            <thead>
-              <tr>
-                <th>Nombre</th>
-                <th>Puesto</th>
-                <th>Fecha</th>
-                <th>¿Asistió?</th>
-              </tr>
-            </thead>
-            <tbody>
-              @for (registro of asistencia(); track registro.id) {
-                <tr>
-                  <td>{{ registro.nombre }}</td>
-                  <td>{{ registro.puesto }}</td>
-                  <!-- El pipe date convierte la fecha ISO en un formato legible -->
-                  <td>{{ registro.fecha | date:'dd/MM/yyyy' }}</td>
-                  <td>
-                    <!-- MySQL guarda el booleano como 1 o 0, por eso se compara con 1 -->
-                    @if (registro.asistio === 1) {
-                      Sí
-                    } @else {
-                      No
-                    }
-                  </td>
-                </tr>
-              } @empty {
-                <tr>
-                  <td colspan="4">No hay registros de asistencia</td>
-                </tr>
-              }
-            </tbody>
-          </table>
-        </div>
-
-        <div class="fila-boton">
-          <button class="btn-principal">Guardar asistencia</button>
-        </div>
-      }
-
       <!-- sección del historial de pagos -->
       @if (seccion() === 'pagos') {
         <div class="encabezado-seccion">
           <h2 class="titulo-seccion">Pagos a empleados</h2>
-          <button class="btn-principal">Calcular pagos del periodo</button>
         </div>
 
         <div class="tabla-scroll">
@@ -143,7 +88,7 @@
                 <th>Nombre</th>
                 <th>Puesto</th>
                 <th>Fecha</th>
-                <th>Días asistidos</th>
+                <th>Días laborados</th>
                 <th>Monto pagado</th>
               </tr>
             </thead>
@@ -153,7 +98,7 @@
                   <td>{{ pago.nombre }}</td>
                   <td>{{ pago.puesto }}</td>
                   <td>{{ pago.fecha | date:'dd/MM/yyyy' }}</td>
-                  <td>{{ pago.dias_asistidos }}</td>
+                  <td>{{ pago.dias_laborados }}</td>
                   <td>{{ pago.monto }}</td>
                 </tr>
               } @empty {

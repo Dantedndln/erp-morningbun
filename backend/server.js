@@ -1,24 +1,21 @@
+require('dotenv').config();
 const express = require('express');
 const cors = require('cors');
 
 const app = express();
 
-app.use(cors());
+app.use(cors({ origin: 'http://localhost:4200' }));
 app.use(express.json());
 
-const productoRoutes = require('./routes/producto.routes');
-const proveedorRoutes = require('./routes/proveedor.routes');
-const compraRoutes = require('./routes/compra.routes');
-const empleadoRoutes = require('./routes/empleado.routes');
-const ventaRoutes = require('./routes/venta.routes');
-const contabilidadRoutes = require('./routes/contabilidad.routes');
-app.use('/api/contabilidad', contabilidadRoutes);
-app.use('/api/ventas', ventaRoutes);
-app.use('/api/productos', productoRoutes);
-app.use('/api/proveedores', proveedorRoutes);
-app.use('/api/compras', compraRoutes);
-app.use('/api/empleados', empleadoRoutes);
+// Rutas de la API
+app.use('/api/auth', require('./routes/auth.routes'));
+app.use('/api/productos', require('./routes/producto.routes'));
+app.use('/api/proveedores', require('./routes/proveedor.routes'));
+app.use('/api/compras', require('./routes/compra.routes'));
+app.use('/api/ventas', require('./routes/venta.routes'));
+app.use('/api/empleados', require('./routes/empleado.routes'));
+app.use('/api/contabilidad', require('./routes/contabilidad.routes'));
 
-app.listen(3000, () => {
-  console.log('Servidor ejecutándose en http://localhost:3000');
+app.listen(process.env.PORT, () => {
+  console.log(`Servidor iniciado en el puerto ${process.env.PORT}`);
 });

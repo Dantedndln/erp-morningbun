@@ -1,13 +1,12 @@
 // Aquí van las consultas SQL relacionadas con productos
 const conexion = require('../config/db');
 // Trae todos los productos registrados
-const obtenerProductos = (callback) => {
-  conexion.query('SELECT * FROM productos', (error, resultados) => {
-    if (error) {
-      return callback(error, null);
-    }
+function obtenerProductos(callback) {
+  const sql = 'SELECT * FROM productos WHERE vigente = 1';
+  conexion.query(sql, (error, resultados) => {
+    if (error) { callback(error, null); return; }
     callback(null, resultados);
   });
-};
+}
 
 module.exports = { obtenerProductos };

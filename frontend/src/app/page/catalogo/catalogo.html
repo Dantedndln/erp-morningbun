@@ -1,15 +1,21 @@
 <div class="pantalla-catalogo">
+
   <header class="barra-cliente">
     <div class="izquierda">
       <span class="marca">MorningBun</span>
-      <span class="lema">Mornings. They're always better with Coffee and a sweet bunn</span>
+      <span class="lema">Mornings. They're always better with coffee and a sweet bun</span>
     </div>
+
     <nav class="acciones">
-      <a routerLink="/" class="enlace-barra">Cerrar sesión</a>
+      <button class="btn-carrito">Carrito</button>
+      <a class="enlace-cerrar" (click)="cerrarSesion()">Cerrar sesión</a>
     </nav>
   </header>
+
   <div class="banner"></div>
+<!-- La galería donde se listan los productos, junto a las chips de categorías -->
   <section class="contenido-catalogo">
+
     <div class="categorias">
       <button class="chip">Café</button>
       <button class="chip">Desayunos</button>
@@ -19,25 +25,35 @@
       <button class="chip">Granos</button>
       <button class="chip">Extras</button>
     </div>
-    <div class="buscador">
-      <input type="text" placeholder="Buscar producto...">
-    </div>
+
     <div class="galeria">
-      @for (producto of productos(); track producto.id){
+      @for (producto of productos(); track producto.id) {
         <article class="tarjeta-producto">
-        <img class="imagen" [src]="'/' + producto.imagen" [alt] = "producto.nombre">
-        <div class="datos">
-          <p class="nombre">{{ producto.nombre }}</p>
-          <div class="fila-precio">
-            <span class="precio">{{producto.precio}}</span>
-            <button class="btn-agregar">+</button>
+          <img
+            class="imagen"
+            [src]="producto.imagen ? '/' + producto.imagen : '/sin-imagen.png'"
+            [alt]="producto.nombre">
+
+          <div class="datos">
+            <p class="nombre">{{ producto.nombre }}</p>
+            <div class="fila-precio">
+              <span class="precio">{{ producto.precio }}</span>
+              <button class="btn-agregar">+</button>
+            </div>
           </div>
-        </div>
-      </article>
+        </article>
+      } @empty {
+        <p>No hay productos disponibles</p>
       }
     </div>
-    <div class="fila-boton">
-      <button class="btn-principal">Mi carrito</button>
-    </div>
+<!-- Apartado para el footer, donde viene lo legal y así -->
   </section>
+
+  <footer class="pie-cliente">
+    <p class="aviso-pie">
+      Revisa nuestra <a routerLink="/privacidad">política de privacidad</a>
+      y nuestros <a routerLink="/terminos">términos y condiciones</a>
+    </p>
+    <p class="marca-pie">MorningBun</p>
+  </footer>
 </div>

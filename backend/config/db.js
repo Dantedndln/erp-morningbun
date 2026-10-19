@@ -1,18 +1,20 @@
 const mysql = require('mysql2');
+require('dotenv').config();
 
+//Las credenciales se leen de variables de entorno para no exponerlas en el código
 const conexion = mysql.createConnection({
-  host: 'localhost',
-  user: 'root',
-  password: '',
-  database: 'cafeteria'
+  host: process.env.DB_HOST,
+  user: process.env.DB_USER,
+  password: process.env.DB_PASSWORD,
+  database: process.env.DB_NAME
 });
 
 conexion.connect((error) => {
   if (error) {
-    console.error('Error de conexion', error);
+    console.error('Error de conexión a la base de datos:', error);
     return;
   }
-  console.log('Conectado a mysql');
+  console.log('Conectado a MySQL');
 });
 
 module.exports = conexion;
