@@ -1,14 +1,8 @@
 const express = require('express');
 const router = express.Router();
-const compraService = require('../services/compra.service');
-// GET /api/compras para listado de compras
-router.get('/', (req, res) => {
-  compraService.obtenerCompras((error, compras) => {
-    if (error) {
-      return res.status(500).json({ mensaje: 'Error al consultar compras' });
-    }
-    res.json(compras);
-  });
-});
+const compraController = require('../controllers/compra.controller');
+const { verificarSesion, verificarRol } = require('../middlewares/auth.middleware');
+// Exclusivo para el administrador, ¿a un cliente qué le importa ver cuanto gasto en compras? :>
+router.get('/', verificarSesion, verificarRol('administrador'), compraController.obtenerCompras);
 
 module.exports = router;

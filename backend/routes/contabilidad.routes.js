@@ -1,25 +1,9 @@
 const express = require('express');
 const router = express.Router();
-const contabilidadService = require('../services/contabilidad.service');
+const contabilidadController = require('../controllers/contabilidad.controller');
+const { verificarSesion, verificarRol } = require('../middlewares/auth.middleware');
 
-// GET /api/contabilidad/movimientos para registro general
-router.get('/movimientos', (req, res) => {
-  contabilidadService.obtenerMovimientos((error, movimientos) => {
-    if (error) {
-      return res.status(500).json({ mensaje: 'Error al consultar movimientos' });
-    }
-    res.json(movimientos);
-  });
-});
-
-// GET /api/contabilidad/resumen para ingresos, egresos y balance
-router.get('/resumen', (req, res) => {
-  contabilidadService.obtenerResumen((error, resumen) => {
-    if (error) {
-      return res.status(500).json({ mensaje: 'Error al consultar el resumen' });
-    }
-    res.json(resumen);
-  });
-});
+router.get('/movimientos', verificarSesion, verificarRol('administrador'), contabilidadController.obtenerMovimientos);
+router.get('/resumen', verificarSesion, verificarRol('administrador'), contabilidadController.obtenerResumen);
 
 module.exports = router;

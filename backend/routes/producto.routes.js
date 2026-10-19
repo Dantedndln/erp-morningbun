@@ -1,14 +1,17 @@
 const express = require('express');
 const router = express.Router();
-const productoService = require('../services/producto.service');
-// GET /api/productos para listado de productos
-router.get('/', (req, res) => {
-  productoService.obtenerProductos((error, productos) => {
-    if (error) {
-      return res.status(500).json({ mensaje: 'Error al obtener productos' });
-    }
-    res.json(productos);
-  });
-});
+const productoController = require('../controllers/producto.controller');
+const { verificarSesion, verificarRol } = require('../middlewares/auth.middleware');
+
+// Cadena de responsabilidad: cada petición pasa primero por la verificación de sesión, después por la de rol, y solo entonces
+// llega al controlador
+
+// El catálogo lo consultan tanto el cliente como el administrador
+router.get('/', verificarSesion, productoController.obtenerProductos);
+
+// la gestión del inventario corresponde únicamente al administrador
+router.post('/', verificarSesion, verificarRol('administrador'), productoController.crearProducto);
+router.put('/:id', verificarSesion, verificarRol('administrador'), productoController.modificarProducto);
+router.patch('/:id/baja', verificarSesion, verificarRol('administrador'), productoController.darDeBajaProducto);
 
 module.exports = router;

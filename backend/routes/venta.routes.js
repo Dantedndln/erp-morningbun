@@ -1,15 +1,9 @@
 const express = require('express');
 const router = express.Router();
-const ventaService = require('../services/venta.service');
+const ventaController = require('../controllers/venta.controller');
+const { verificarSesion, verificarRol } = require('../middlewares/auth.middleware');
 
-// GET /api/ventas para historial de ventas
-router.get('/', (req, res) => {
-  ventaService.obtenerVentas((error, ventas) => {
-    if (error) {
-      return res.status(500).json({ mensaje: 'Error al consultar ventas' });
-    }
-    res.json(ventas);
-  });
-});
+// El historial completo de ventas lo consulta solo el administrador
+router.get('/', verificarSesion, verificarRol('administrador'), ventaController.obtenerVentas);
 
 module.exports = router;

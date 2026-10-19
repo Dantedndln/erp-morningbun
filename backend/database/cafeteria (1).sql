@@ -165,13 +165,12 @@ CREATE TABLE `proveedores` (
 --
 
 INSERT INTO `proveedores` (`id`, `nombre`, `telefono`, `correo`, `vigente`, `fecha_baja`) VALUES
-(1, 'Café del Valle', '33 1234 5678', 'ventas@cafedelvalle.mx', 1, NULL),
-(2, 'Lácteos La Ordeña', '33 8765 4321', 'pedidos@laordena.mx', 1, NULL),
-(3, 'Harinas del Bajío', '33 2468 1357', 'contacto@harinasbajio.mx', 1, NULL);
+(1, 'Café del Quigob', '33 1234 5678', 'ventas@cafedelquigob.mx', 1, NULL),
+(2, 'Lácteos Miliky', '33 8765 4321', 'pedidos@miliky.mx', 1, NULL),
+(3, 'Harinas del Parcero', '33 2468 1357', 'contacto@harinasparcero.mx', 1, NULL);
 
 -- --------------------------------------------------------
 
---
 -- Estructura de tabla para la tabla `usuarios`
 --
 
