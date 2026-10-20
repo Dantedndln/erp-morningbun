@@ -15,6 +15,7 @@ app.use('/api/compras', require('./routes/compra.routes'));
 app.use('/api/ventas', require('./routes/venta.routes'));
 app.use('/api/empleados', require('./routes/empleado.routes'));
 app.use('/api/contabilidad', require('./routes/contabilidad.routes'));
+app.use('/api/paypal', require('./routes/paypal.routes'));
 
 app.listen(process.env.PORT, () => {
   console.log(`Servidor iniciado en el puerto ${process.env.PORT}`);

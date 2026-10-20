@@ -7,25 +7,37 @@
     </div>
 
     <nav class="acciones">
-      <button class="btn-carrito">Carrito</button>
+      <button class="btn-carrito" (click)="abrirCarrito()">
+        Carrito
+        @if (carritoService.cantidadArticulos() > 0) {
+          <span class="contador">{{ carritoService.cantidadArticulos() }}</span>
+        }
+      </button>
       <a class="enlace-cerrar" (click)="cerrarSesion()">Cerrar sesión</a>
     </nav>
   </header>
 
   <div class="banner"></div>
-<!-- La galería donde se listan los productos, junto a las chips de categorías -->
+
   <section class="contenido-catalogo">
-
+    <!-- Filtro de categorías, las chips ñam ñam -->
     <div class="categorias">
-      <button class="chip">Café</button>
-      <button class="chip">Desayunos</button>
-      <button class="chip">Panadería</button>
-      <button class="chip">Malteadas</button>
-      <button class="chip">Helados</button>
-      <button class="chip">Granos</button>
-      <button class="chip">Extras</button>
+      <button class="chip" [class.chip-activo]="categoriaActiva() === ''"
+              (click)="cargarProductos('')">Todos</button>
+      <button class="chip" [class.chip-activo]="categoriaActiva() === 'Café'"
+              (click)="cargarProductos('Café')">Café</button>
+      <button class="chip" [class.chip-activo]="categoriaActiva() === 'Desayunos'"
+              (click)="cargarProductos('Desayunos')">Desayunos</button>
+      <button class="chip" [class.chip-activo]="categoriaActiva() === 'Panadería'"
+              (click)="cargarProductos('Panadería')">Panadería</button>
+      <button class="chip" [class.chip-activo]="categoriaActiva() === 'Malteadas'"
+              (click)="cargarProductos('Malteadas')">Malteadas</button>
+      <button class="chip" [class.chip-activo]="categoriaActiva() === 'Helados'"
+              (click)="cargarProductos('Helados')">Helados</button>
+      <button class="chip" [class.chip-activo]="categoriaActiva() === 'Granos'"
+              (click)="cargarProductos('Granos')">Granos</button>
     </div>
-
+    <!-- La galería donde se listan los productos-->
     <div class="galeria">
       @for (producto of productos(); track producto.id) {
         <article class="tarjeta-producto">
@@ -38,7 +50,11 @@
             <p class="nombre">{{ producto.nombre }}</p>
             <div class="fila-precio">
               <span class="precio">{{ producto.precio }}</span>
-              <button class="btn-agregar">+</button>
+              @if (producto.stock > 0) {
+                <button class="btn-agregar" (click)="agregar(producto)">+</button>
+              } @else {
+                <span class="agotado">Agotado</span>
+              }
             </div>
           </div>
         </article>
@@ -46,10 +62,10 @@
         <p>No hay productos disponibles</p>
       }
     </div>
-<!-- Apartado para el footer, donde viene lo legal y así -->
-  </section>
 
-  <footer class="pie-cliente">
+  </section>
+  <!-- Apartado para el footer, donde viene lo legal y así -->
+  <footer class="pie-cliente"> 
     <p class="aviso-pie">
       Revisa nuestra <a routerLink="/privacidad">política de privacidad</a>
       y nuestros <a routerLink="/terminos">términos y condiciones</a>
@@ -57,3 +73,61 @@
     <p class="marca-pie">MorningBun</p>
   </footer>
 </div>
+
+<!-- Modal del carrito y pago -->
+@if (modal() === 'carrito') {
+  <div class="fondo-modal" (click)="cerrarModal()">
+    <div class="tarjeta-venta" (click)="$event.stopPropagation()">
+      <h2 class="titulo-venta">Datos de la venta</h2>
+
+      @for (item of carritoService.items(); track item.producto.id) {
+        <div class="renglon-venta">
+          <span class="nombre-renglon">{{ item.producto.nombre }}</span>
+          <div class="controles">
+            <button class="btn-cantidad" (click)="carritoService.disminuir(item.producto.id)">−</button>
+            <span class="cantidad">{{ item.cantidad }}</span>
+            <button class="btn-cantidad" (click)="carritoService.aumentar(item.producto.id)">+</button>
+          </div>
+        </div>
+      } @empty {
+        <p class="carrito-vacio">Tu carrito está vacío</p>
+      }
+
+      @if (carritoService.items().length > 0) {
+        <p class="total-venta">Total: {{ carritoService.total() | number:'1.2-2' }}</p>
+
+        <!-- Elemento del SDK de PayPal, inicia oculto y se muestra cuando el SDK confirma que el método está disponible -->
+        <paypal-button hidden></paypal-button>
+      }
+
+      <p class="estado-pago">{{ mensaje() }}</p>
+
+      <button class="btn-secundario" (click)="cerrarModal()">Seguir comprando</button>
+    </div>
+  </div>
+}
+
+<!-- Modal: ticket -->
+@if (modal() === 'ticket' && resultado()) {
+  <div class="fondo-modal" (click)="cerrarModal()">
+    <div class="tarjeta-ticket" (click)="$event.stopPropagation()">
+      <h2 class="titulo-ticket">MorningBun</h2>
+      <p class="folio-ticket">Folio: V-{{ resultado()!.ventaId }}</p>
+
+      @for (renglon of renglonesTicket(); track renglon.nombre) {
+        <div class="renglon-ticket">
+          <span>[{{ renglon.cantidad }}] {{ renglon.nombre }}</span>
+          <span>{{ renglon.subtotal | number:'1.2-2' }}</span>
+        </div>
+      }
+
+      <p class="total-ticket">Total: {{ resultado()!.total }}</p>
+
+      <p class="nota-ticket">
+        El comprobante fue enviado a tu correo electrónico.
+      </p>
+
+      <button class="btn-principal" (click)="cerrarModal()">Cerrar</button>
+    </div>
+  </div>
+}

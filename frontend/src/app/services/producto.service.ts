@@ -9,7 +9,9 @@ import { Producto } from '../models/producto.model';
 export class ProductoService {
     private api = 'http://localhost:3000/api/productos';
     constructor (private http: HttpClient){}
-    obtenerProductos(): Observable <Producto[]> {
-        return this.http.get<Producto[]>(this.api);
+    obtenerProductos(categoria: string = ''): Observable<Producto[]> {
+    // El filtrado se realiza en el servidor
+    const url = categoria ? `${this.api}?categoria=${categoria}` : this.api;
+     return this.http.get<Producto[]>(url);
     }
 }

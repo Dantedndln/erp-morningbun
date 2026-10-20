@@ -57,10 +57,24 @@ function darDeBajaProducto(id, callback) {
   });
 }
 
+// Consulta los productos por sus identificadores
+// devuelve una promesa porque se utiliza dentro del flujo de pago,
+// que es asíncrono por las llamadas a la API de PayPal
+function obtenerPorIds(ids) {
+  return new Promise((resolve, reject) => {
+    const sql = 'SELECT * FROM productos WHERE id IN (?) AND vigente = 1';
+    db.query(sql, [ids], (error, resultados) => {
+      if (error) { reject(error); return; }
+      resolve(resultados);
+    });
+  });
+}
+
 module.exports = {
   obtenerProductos,
   obtenerPorCategoria,
   crearProducto,
   modificarProducto,
-  darDeBajaProducto
+  darDeBajaProducto,
+  obtenerPorIds
 };
