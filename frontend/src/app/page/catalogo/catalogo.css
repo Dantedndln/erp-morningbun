@@ -331,5 +331,6 @@
 }
 paypal-button {
   display: block;
+  width: 100%;
   margin: 18px 0;
 }

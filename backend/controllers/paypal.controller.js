@@ -1,6 +1,8 @@
 const { paypalRequest } = require('../services/paypal.service');
 const productoService = require('../services/producto.service');
 const ventaService = require('../services/venta.service');
+const comprobanteService = require('../services/comprobante.service');
+const correoService = require('../services/correo.service');
 
 // Almacenamiento temporal de las órdenes creadas y aún no capturadas
 // no se guardan en la base de datos porque la venta se registra únicamente cuando el pago ha sido confirmado
@@ -121,7 +123,7 @@ async function capturarOrden(req, res) {
       return res.status(409).json({ error: 'Pago pendiente de verificación' });
     }
 
-    // Ahora sí, y solo aquí, se registra la venta y se descuenta la existencia
+    // ahora sí, y solo aquí, se registra la venta y se descuenta la existencia
     const venta = await ventaService.registrarVenta({
       usuarioId: ordenLocal.usuarioId,
       clienteNombre: ordenLocal.clienteNombre,
@@ -131,6 +133,24 @@ async function capturarOrden(req, res) {
       capturaId: captura.id,
       detalles: ordenLocal.detalles
     });
+
+    // fecha del comprobante en formato aaaa-mm-dd
+    venta.fecha = new Date().toISOString().split('T')[0];
+
+    // se genera el comprobante y se envía por correo
+    // si el envío falla, la venta ya quedó registrada y el pago cobrado, por lo que el error se registra pero no 
+    // interrumpe la operación
+    try {
+      const xml = comprobanteService.generarComprobante(venta);
+      if (ordenLocal.correoCliente) {
+        await correoService.enviarComprobante(ordenLocal.correoCliente, venta, xml);
+        console.log(`Comprobante V-${venta.id} enviado a ${ordenLocal.correoCliente}`);
+      } else {
+        console.log(`Venta V-${venta.id} sin correo registrado, no se envió comprobante`);
+      }
+    } catch (error) {
+      console.error('No se pudo enviar el comprobante:', error?.response?.body || error);
+    }
 
     ordenLocal.estado = 'PAGADA';
     ordenes.delete(orderId);
@@ -146,7 +166,7 @@ async function capturarOrden(req, res) {
   } catch (error) {
     console.error(error);
 
-    // No se asume que el pago falló porque puede haberse cobrado
+    // no se asume que el pago falló porque puede haberse cobrado
     const orden = ordenes.get(orderId);
     if (orden && orden.estado === 'PROCESANDO') {
       orden.estado = 'REVISION';

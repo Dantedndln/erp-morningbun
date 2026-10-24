@@ -95,7 +95,7 @@
 
       @if (carritoService.items().length > 0) {
         <p class="total-venta">Total: {{ carritoService.total() | number:'1.2-2' }}</p>
-
+        
         <!-- Elemento del SDK de PayPal, inicia oculto y se muestra cuando el SDK confirma que el método está disponible -->
         <paypal-button hidden></paypal-button>
       }
