@@ -8,7 +8,7 @@ export interface ItemCarrito {
 }
 
 @Injectable({
-  providedIn: 'root' // una sola instancia compartida en toda la aplicación
+  providedIn: 'root'
 })
 export class CarritoService {
   items = signal<ItemCarrito[]>([]);
@@ -25,15 +25,31 @@ export class CarritoService {
     this.items().reduce((suma, item) => suma + item.cantidad, 0)
   );
 
-  agregar(producto: Producto): void {
+  // Agrega una cantidad determinada del producto al carrito
+  agregarVarios(producto: Producto, cantidad: number): void {
     const existente = this.items().find(i => i.producto.id === producto.id);
-
     if (existente) {
-      this.aumentar(producto.id);
+      this.items.update(items =>
+        items.map(item =>
+          item.producto.id === producto.id
+            // No se permite superar la existencia disponible
+            ? { ...item, cantidad: Math.min(item.cantidad + cantidad, item.producto.stock) }
+            : item
+        )
+      );
       return;
     }
 
-    this.items.update(items => [...items, { producto, cantidad: 1 }]);
+    this.items.update(items => [...items, { producto, cantidad }]);
+  }
+
+  agregar(producto: Producto): void {
+    this.agregarVarios(producto, 1);
+  }
+
+  // subtotal de un renglón, precio unitario por cantidad
+  subtotal(item: ItemCarrito): number {
+    return Number(item.producto.precio) * item.cantidad;
   }
 
   aumentar(productoId: number): void {

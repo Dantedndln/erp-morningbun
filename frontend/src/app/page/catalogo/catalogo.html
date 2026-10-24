@@ -37,21 +37,23 @@
       <button class="chip" [class.chip-activo]="categoriaActiva() === 'Granos'"
               (click)="cargarProductos('Granos')">Granos</button>
     </div>
+
     <!-- La galería donde se listan los productos-->
-    <div class="galeria">
+        <div class="galeria">
       @for (producto of productos(); track producto.id) {
-        <article class="tarjeta-producto">
+        <article class="tarjeta-producto" (click)="abrirDetalle(producto)">
           <img
             class="imagen"
             [src]="producto.imagen ? '/' + producto.imagen : '/sin-imagen.png'"
             [alt]="producto.nombre">
-
           <div class="datos">
             <p class="nombre">{{ producto.nombre }}</p>
             <div class="fila-precio">
               <span class="precio">{{ producto.precio }}</span>
               @if (producto.stock > 0) {
-                <button class="btn-agregar" (click)="agregar(producto)">+</button>
+                <!-- stopPropagation evita que el clic del botón abra también la tarjeta de detalle -->
+                <button class="btn-agregar"
+                        (click)="agregar(producto); $event.stopPropagation()">+</button>
               } @else {
                 <span class="agotado">Agotado</span>
               }
@@ -62,8 +64,8 @@
         <p>No hay productos disponibles</p>
       }
     </div>
-
   </section>
+
   <!-- Apartado para el footer, donde viene lo legal y así -->
   <footer class="pie-cliente"> 
     <p class="aviso-pie">
@@ -79,10 +81,16 @@
   <div class="fondo-modal" (click)="cerrarModal()">
     <div class="tarjeta-venta" (click)="$event.stopPropagation()">
       <h2 class="titulo-venta">Datos de la venta</h2>
-
+      <p class="cliente-venta">Cliente: <strong>{{ nombreCliente() }}</strong></p>
       @for (item of carritoService.items(); track item.producto.id) {
         <div class="renglon-venta">
-          <span class="nombre-renglon">{{ item.producto.nombre }}</span>
+          <div class="info-renglon">
+            <span class="nombre-renglon">{{ item.producto.nombre }}</span>
+            <span class="subtotal-renglon">
+              {{ item.producto.precio }} × {{ item.cantidad }} =
+              {{ carritoService.subtotal(item) | number:'1.2-2' }}
+            </span>
+          </div>
           <div class="controles">
             <button class="btn-cantidad" (click)="carritoService.disminuir(item.producto.id)">−</button>
             <span class="cantidad">{{ item.cantidad }}</span>
@@ -92,42 +100,75 @@
       } @empty {
         <p class="carrito-vacio">Tu carrito está vacío</p>
       }
-
       @if (carritoService.items().length > 0) {
         <p class="total-venta">Total: {{ carritoService.total() | number:'1.2-2' }}</p>
-        
-        <!-- Elemento del SDK de PayPal, inicia oculto y se muestra cuando el SDK confirma que el método está disponible -->
+        <!-- Elemento del SDK de PayPal -->
         <paypal-button hidden></paypal-button>
       }
-
       <p class="estado-pago">{{ mensaje() }}</p>
-
       <button class="btn-secundario" (click)="cerrarModal()">Seguir comprando</button>
     </div>
   </div>
 }
 
-<!-- Modal: ticket -->
+<!-- Modal para el ticket -->
 @if (modal() === 'ticket' && resultado()) {
   <div class="fondo-modal" (click)="cerrarModal()">
     <div class="tarjeta-ticket" (click)="$event.stopPropagation()">
       <h2 class="titulo-ticket">MorningBun</h2>
       <p class="folio-ticket">Folio: V-{{ resultado()!.ventaId }}</p>
-
       @for (renglon of renglonesTicket(); track renglon.nombre) {
         <div class="renglon-ticket">
           <span>[{{ renglon.cantidad }}] {{ renglon.nombre }}</span>
           <span>{{ renglon.subtotal | number:'1.2-2' }}</span>
         </div>
       }
-
       <p class="total-ticket">Total: {{ resultado()!.total }}</p>
-
       <p class="nota-ticket">
         El comprobante fue enviado a tu correo electrónico.
       </p>
-
       <button class="btn-principal" (click)="cerrarModal()">Cerrar</button>
+    </div>
+  </div>
+}
+
+<!-- Modal de la información del producto -->
+@if (modal() === 'detalle' && productoDetalle()) {
+  <div class="fondo-modal" (click)="cerrarModal()">
+    <div class="tarjeta-detalle" (click)="$event.stopPropagation()">
+      <img
+        class="imagen-detalle"
+        [src]="productoDetalle()!.imagen ? '/' + productoDetalle()!.imagen : '/sin-imagen.png'"
+        [alt]="productoDetalle()!.nombre">
+      <div class="cuerpo-detalle">
+        <div class="encabezado-detalle">
+          <h2 class="nombre-detalle">{{ productoDetalle()!.nombre }}</h2>
+          <span class="precio-detalle">{{ productoDetalle()!.precio }}</span>
+        </div>
+        <p class="categoria-detalle">{{ productoDetalle()!.categoria }}</p>
+        <p class="descripcion-detalle">{{ productoDetalle()!.descripcion }}</p>
+        <p class="stock-detalle">
+          <span class="etiqueta-detalle">STOCK:</span>
+          @if (productoDetalle()!.stock > 0) {
+            {{ productoDetalle()!.stock }}
+          } @else {
+            Terminado
+          }
+        </p>
+        @if (productoDetalle()!.stock > 0) {
+          <div class="acciones-detalle">
+            <div class="controles">
+              <button class="btn-cantidad" (click)="disminuirDetalle()">−</button>
+              <span class="cantidad">{{ cantidadDetalle() }}</span>
+              <button class="btn-cantidad" (click)="aumentarDetalle()">+</button>
+            </div>
+            <button class="btn-principal" (click)="agregarDesdeDetalle()">
+              Agregar a la orden
+            </button>
+          </div>
+        }
+        <button class="btn-secundario" (click)="cerrarModal()">Cerrar</button>
+      </div>
     </div>
   </div>
 }

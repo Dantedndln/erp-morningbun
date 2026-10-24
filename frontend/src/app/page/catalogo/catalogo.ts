@@ -9,7 +9,7 @@ import { PaypalService } from '../../services/paypal.service';
 import { Producto } from '../../models/producto.model';
 import { ResultadoPago } from '../../models/paypal.model';
 
-// El SDK de PayPal se carga desde index.html y expone esta variable global
+// el SDK de PayPal se carga desde index.html y expone esta variable global
 declare const paypal: any;
 
 @Component({
@@ -17,28 +17,27 @@ declare const paypal: any;
   imports: [RouterLink, DecimalPipe],
   templateUrl: './catalogo.html',
   styleUrl: './catalogo.css',
-  // Necesario porque <paypal-button> es un elemento personalizado que no forma parte de Angular
+  // necesario porque <paypal-button> es un elemento personalizado que no forma parte de Angular
   schemas: [CUSTOM_ELEMENTS_SCHEMA]
 })
 export class Catalogo implements OnInit, AfterViewInit {
-
   private zone = inject(NgZone);
   // Signal controla qué sección se está mostrando, y aquí se usa para poder conservar los elementos del catálogo aunque 
   // se cambie de sección
   productos = signal<Producto[]>([]);
   categoriaActiva = signal<string>('');
-  modal = signal<'carrito' | 'ticket' | null>(null);
+  modal = signal<'carrito' | 'ticket' | 'detalle' |null>(null);
   resultado = signal<ResultadoPago | null>(null);
   mensaje = signal('Preparando PayPal...');
-
+  productoDetalle = signal<Producto | null>(null);
+  cantidadDetalle = signal(1);
   renglonesTicket = signal<{ nombre: string; cantidad: number; subtotal: number }[]>([]);
-
   // Sesión de pago creada por el SDK
   private sesionPago: any = null;
 
   constructor(
     private productoService: ProductoService,
-    private authService: AuthService,
+    public authService: AuthService,
     private router: Router,
     public carritoService: CarritoService,
     private paypalService: PaypalService
@@ -61,7 +60,6 @@ export class Catalogo implements OnInit, AfterViewInit {
       const metodos = await sdk.findEligibleMethods({
         currencyCode: 'MXN'
       });
-
       if (!metodos.isEligible('paypal')) {
         this.mensaje.set('PayPal no está disponible');
         return;
@@ -75,7 +73,6 @@ export class Catalogo implements OnInit, AfterViewInit {
             const respuesta = await firstValueFrom(
               this.paypalService.capturarOrden(data.orderId)
             );
-
             this.zone.run(() => {
               // Se conservan los renglones para mostrarlos en el ticket
               this.renglonesTicket.set(
@@ -85,11 +82,9 @@ export class Catalogo implements OnInit, AfterViewInit {
                   subtotal: Number(i.producto.precio) * i.cantidad
                 }))
               );
-
               this.resultado.set(respuesta);
               this.carritoService.vaciar();
               this.modal.set('ticket');
-
               // Se recargan los productos para reflejar la existencia descontada
               this.cargarProductos(this.categoriaActiva());
             });
@@ -112,9 +107,7 @@ export class Catalogo implements OnInit, AfterViewInit {
           });
         }
       });
-
       this.mensaje.set('Selecciona PayPal para pagar');
-
     } catch {
       this.mensaje.set('No se pudo cargar PayPal');
     }
@@ -122,7 +115,6 @@ export class Catalogo implements OnInit, AfterViewInit {
 
   cargarProductos(categoria: string = ''): void {
     this.categoriaActiva.set(categoria);
-
     this.productoService.obtenerProductos(categoria).subscribe({
       next: (datos) => this.productos.set(datos),
       error: (error) => console.error('Error al cargar los productos', error)
@@ -138,7 +130,6 @@ export class Catalogo implements OnInit, AfterViewInit {
 
   abrirCarrito(): void {
     this.modal.set('carrito');
-
     // El botón vive dentro del modal, así que se configura una vez que el modal existe en el DOM
     setTimeout(() => this.configurarBoton(), 0);
   }
@@ -150,18 +141,14 @@ export class Catalogo implements OnInit, AfterViewInit {
   // Muestra el botón de PayPal y define qué hace al presionarlo
   private configurarBoton(): void {
     const boton = document.querySelector('paypal-button');
-
     if (!boton || !this.sesionPago) {
       return;
     }
-
     boton.removeAttribute('hidden');
-
     boton.addEventListener('click', async () => {
       if (this.carritoService.items().length === 0) {
         return;
       }
-
       try {
         // El backend crea la orden y devuelve su identificador
         await this.sesionPago.start(
@@ -186,4 +173,39 @@ export class Catalogo implements OnInit, AfterViewInit {
     this.authService.cerrarSesion();
     this.router.navigate(['/']);
   }
+
+  // abre la tarjeta con la información completa del producto
+  abrirDetalle(producto: Producto): void {
+    this.productoDetalle.set(producto);
+    this.cantidadDetalle.set(1);
+    this.modal.set('detalle');
+  }
+
+  aumentarDetalle(): void {
+    const producto = this.productoDetalle();
+    if (producto && this.cantidadDetalle() < producto.stock) {
+      this.cantidadDetalle.update(cantidad => cantidad + 1);
+    }
+  }
+
+  disminuirDetalle(): void {
+    if (this.cantidadDetalle() > 1) {
+      this.cantidadDetalle.update(cantidad => cantidad - 1);
+    }
+  }
+
+  agregarDesdeDetalle(): void {
+    const producto = this.productoDetalle();
+    if (!producto) {
+      return;
+    }
+    this.carritoService.agregarVarios(producto, this.cantidadDetalle());
+    this.cerrarModal();
+  }
+
+  // nombre del cliente que aparece en el comprobante
+  nombreCliente(): string {
+    return this.authService.obtenerNombre() ?? 'Público general';
+  }
+
 }
