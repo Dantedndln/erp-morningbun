@@ -1,7 +1,7 @@
 const mysql = require('mysql2');
 require('dotenv').config();
 
-//Las credenciales se leen de variables de entorno para no exponerlas en el código
+//las credenciales se leen de variables de entorno para no exponerlas al subir el repo
 const conexion = mysql.createConnection({
   host: process.env.DB_HOST,
   user: process.env.DB_USER,

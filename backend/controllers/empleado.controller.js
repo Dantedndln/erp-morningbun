@@ -1,5 +1,5 @@
 const empleadoService = require('../services/empleado.service');
-
+//full consultas en el apartado de los empleados para la sección de recursos humanos
 function obtenerEmpleados(req, res) {
   empleadoService.obtenerEmpleados((error, empleados) => {
     if (error) {

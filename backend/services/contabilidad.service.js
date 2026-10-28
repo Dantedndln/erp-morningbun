@@ -1,64 +1,63 @@
 const db = require('../config/db');
-//Une ventas, compras y pagos en un solo listado de movimientos
-//UNION ALL apila los resultados de las tres consultas, siempre que cada una devuelva el mismo número de columnas con los mismos nombres
-function obtenerMovimientos(callback) {
+
+//consulta base que unifica los movimientos de las tres tablas
+//se define una sola vez y se reutiliza en las tres consultas, para no repetir el UNION en cada una
+const SQL_MOVIMIENTOS = `
+  SELECT
+    v.fecha,
+    'Ingreso' AS tipo,
+    'Venta' AS origen,
+    CONCAT('V-', v.id) AS referencia,
+    v.total AS monto
+  FROM ventas v
+
+  UNION ALL
+
+  SELECT
+    c.fecha,
+    'Egreso',
+    'Compra',
+    CONCAT('C-', c.id),
+    c.total
+  FROM compras c
+
+  UNION ALL
+
+  SELECT
+    p.fecha,
+    'Egreso',
+    'Pago',
+    e.nombre,
+    p.monto
+  FROM pagos p
+  LEFT JOIN empleados e ON p.empleado_id = e.id
+`;
+
+//registro general filtrado por rango de fechas
+function obtenerMovimientos(desde, hasta, callback) {
   const sql = `
-    SELECT
-      v.fecha,
-      'Ingreso' AS tipo,
-      'Venta' AS origen,
-      CONCAT('V-', v.id) AS referencia,
-      v.total AS monto
-    FROM ventas v
-
-    UNION ALL
-
-    SELECT
-      c.fecha,
-      'Egreso' AS tipo,
-      'Compra' AS origen,
-      CONCAT('C-', c.id) AS referencia,
-      c.total AS monto
-    FROM compras c
-
-    UNION ALL
-
-    SELECT
-      p.fecha,
-      'Egreso' AS tipo,
-      'Pago' AS origen,
-      e.nombre AS referencia,
-      p.monto AS monto
-    FROM pagos p
-    LEFT JOIN empleados e ON p.empleado_id = e.id
-
+    SELECT * FROM (${SQL_MOVIMIENTOS}) AS movimientos
+    WHERE fecha BETWEEN ? AND ?
     ORDER BY fecha DESC
   `;
-  db.query(sql, (error, resultados) => {
-    if (error) {
-      callback(error, null);
-      return;
-    }
+  db.query(sql, [desde, hasta], (error, resultados) => {
+    if (error) { callback(error, null); return; }
     callback(null, resultados);
   });
 }
 
-// Calcula el total de ingresos y el de egresos, y de ahí el balance
-// COALESCE devuelve 0 en lugar de NULL cuando una tabla está vacía
-function obtenerResumen(callback) {
+//totales del periodo. COALESCE devuelve cero cuando no hay registros
+function obtenerResumen(desde, hasta, callback) {
   const sql = `
     SELECT
-      (SELECT COALESCE(SUM(total), 0) FROM ventas) AS ingresos,
-      (SELECT COALESCE(SUM(total), 0) FROM compras)
-        + (SELECT COALESCE(SUM(monto), 0) FROM pagos) AS egresos
+      COALESCE(SUM(CASE WHEN tipo = 'Ingreso' THEN monto ELSE 0 END), 0) AS ingresos,
+      COALESCE(SUM(CASE WHEN tipo = 'Egreso' THEN monto ELSE 0 END), 0) AS egresos
+    FROM (${SQL_MOVIMIENTOS}) AS movimientos
+    WHERE fecha BETWEEN ? AND ?
   `;
-  db.query(sql, (error, resultados) => {
-    if (error) {
-      callback(error, null);
-      return;
-    }
+  db.query(sql, [desde, hasta], (error, resultados) => {
+    if (error) { callback(error, null); return; }
 
-    //La consulta devuelve un arreglo con una sola fila
     const fila = resultados[0];
     const ingresos = Number(fila.ingresos);
     const egresos = Number(fila.egresos);
@@ -71,7 +70,23 @@ function obtenerResumen(callback) {
   });
 }
 
-module.exports = {
-  obtenerMovimientos,
-  obtenerResumen
-};
+//ingresos y egresos agrupados por día
+//solo aparecen los días que tuvieron movimientos
+function obtenerGrafica(desde, hasta, callback) {
+  const sql = `
+    SELECT
+      fecha,
+      COALESCE(SUM(CASE WHEN tipo = 'Ingreso' THEN monto ELSE 0 END), 0) AS ingresos,
+      COALESCE(SUM(CASE WHEN tipo = 'Egreso' THEN monto ELSE 0 END), 0) AS egresos
+    FROM (${SQL_MOVIMIENTOS}) AS movimientos
+    WHERE fecha BETWEEN ? AND ?
+    GROUP BY fecha
+    ORDER BY fecha
+  `;
+  db.query(sql, [desde, hasta], (error, resultados) => {
+    if (error) { callback(error, null); return; }
+    callback(null, resultados);
+  });
+}
+
+module.exports = { obtenerMovimientos, obtenerResumen, obtenerGrafica };

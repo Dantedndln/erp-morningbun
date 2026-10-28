@@ -193,3 +193,74 @@ td {
   font-weight: 600;
   min-height: 30px;
 }
+/* Para la gráfica :p */
+.grafica {
+  background-color: #FFFFFF;
+  border: 1px solid #D9C4A9;
+  border-radius: 10px;
+  padding: 24px;
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  gap: 28px;
+  min-height: 240px;
+  overflow-x: auto;
+}
+.grafica-vacia {
+  font-size: 14px;
+  color: #8A7462;
+  align-self: center;
+}
+.grupo-barras {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  flex-shrink: 0;
+}
+.par {
+  display: flex;
+  align-items: flex-end;
+  gap: 6px;
+  height: 180px;
+}
+.barra {
+  width: 34px;
+  border-radius: 3px 3px 0 0;
+  transition: height 0.3s;
+  min-height: 2px;
+}
+.barra.egreso {
+  background-color: #4A3427;
+}
+.barra.ingreso {
+  background-color: #B5824A;
+}
+.etiqueta-dia {
+  font-size: 12px;
+  margin-top: 8px;
+  color: #6B5443;
+  white-space: nowrap;
+}
+.monto.positivo {
+  color: #3F7A4A;
+}
+.monto.negativo {
+  color: #C0472B;
+}
+
+/* Distintivo del tipo de movimiento en la tabla */
+.etiqueta-tipo {
+  display: inline-block;
+  padding: 3px 12px;
+  border-radius: 12px;
+  font-size: 12px;
+  font-weight: 500;
+}
+.tipo-ingreso {
+  background-color: #E3F0E6;
+  color: #2F5E3A;
+}
+.tipo-egreso {
+  background-color: #F5E2DD;
+  color: #8A2D1A;
+}

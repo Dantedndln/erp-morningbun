@@ -13,26 +13,34 @@
 
     <section class="cuerpo">
 
-      <!-- sección de la gráfica y totales -->
+      <!-- sección de la gráfica y los totales -->
       @if (seccion() === 'resumen') {
         <div class="encabezado-seccion">
           <h2 class="titulo-seccion">Ingresos y egresos del periodo</h2>
           <div class="campo-fecha">
-            <label for="periodo">Periodo</label>
-            <input type="month" id="periodo" name="periodo">
+            <label for="periodo-resumen">Periodo:</label>
+            <input type="month" id="periodo-resumen"
+                   [value]="periodoResumen()"
+                   (change)="cambiarPeriodoResumen($event)">
           </div>
         </div>
-
-        <!-- La gráfica se dibuja con CSS: la altura de cada barra se calcula
-             en el componente y se aplica con [style.height.px] -->
+        <!--
+        la gráfica se dibuja con CSS, la altura de cada barra se calcula en proporción al valor más alto del periodo 
+        -->
         <div class="grafica">
-          <div class="grupo-barras">
-            <div class="par">
-              <div class="barra egreso" [style.height.px]="alturaEgresos()"></div>
-              <div class="barra ingreso" [style.height.px]="alturaIngresos()"></div>
+          @for (punto of grafica(); track punto.fecha) {
+            <div class="grupo-barras">
+              <div class="par">
+                <div class="barra egreso" [style.height.px]="altura(punto.egresos)"
+                     [title]="punto.egresos"></div>
+                <div class="barra ingreso" [style.height.px]="altura(punto.ingresos)"
+                     [title]="punto.ingresos"></div>
+              </div>
+              <p class="etiqueta-dia">{{ punto.fecha | date:'dd/MM' }}</p>
             </div>
-            <p class="etiqueta-dia">Total acumulado</p>
-          </div>
+          } @empty {
+            <p class="grafica-vacia">No hay movimientos en este periodo</p>
+          }
         </div>
 
         <div class="leyenda">
@@ -43,28 +51,36 @@
         <div class="tarjetas">
           <article class="tarjeta-resumen">
             <p class="etiqueta">Ingreso del periodo</p>
-            <p class="monto">{{ resumen().ingresos }}</p>
+            <p class="monto">{{ resumen().ingresos | number:'1.2-2' }}</p>
           </article>
 
           <article class="tarjeta-resumen">
             <p class="etiqueta">Egreso del periodo</p>
-            <p class="monto">{{ resumen().egresos }}</p>
+            <p class="monto">{{ resumen().egresos | number:'1.2-2' }}</p>
           </article>
 
           <article class="tarjeta-resumen">
             <p class="etiqueta">Balance del periodo</p>
-            <!-- El balance se pinta en verde si es positivo y en rojo si es negativo -->
-            <p class="monto" [class.positivo]="resumen().balance >= 0" [class.negativo]="resumen().balance < 0">
-              {{ resumen().balance }}
+            <p class="monto"
+               [class.positivo]="resumen().balance >= 0"
+               [class.negativo]="resumen().balance < 0">
+              {{ resumen().balance | number:'1.2-2' }}
             </p>
           </article>
         </div>
       }
 
-      <!-- sección de registro general de movimientos -->
+      <!-- sección del registro general -->
       @if (seccion() === 'registro') {
-        <h2 class="titulo-seccion">Registro general de movimientos</h2>
-
+        <div class="encabezado-seccion">
+          <h2 class="titulo-seccion">Registro general de movimientos</h2>
+          <div class="campo-fecha">
+            <label for="periodo-registro">Periodo:</label>
+            <input type="month" id="periodo-registro"
+                   [value]="periodoRegistro()"
+                   (change)="cambiarPeriodoRegistro($event)">
+          </div>
+        </div>
         <div class="tabla-scroll">
           <table>
             <thead>
@@ -77,19 +93,26 @@
               </tr>
             </thead>
             <tbody>
-              <!-- $index se usa como identificador porque los movimientos vienen
-                   de tres tablas distintas y no tienen un id único entre sí -->
+              <!-- 
+              $index se usa como identificador porque los movimientos provienen de tres tablas distintas 
+              -->
               @for (movimiento of movimientos(); track $index) {
                 <tr>
                   <td>{{ movimiento.fecha | date:'dd/MM/yyyy' }}</td>
-                  <td>{{ movimiento.tipo }}</td>
+                  <td>
+                    <span class="etiqueta-tipo"
+                          [class.tipo-ingreso]="movimiento.tipo === 'Ingreso'"
+                          [class.tipo-egreso]="movimiento.tipo === 'Egreso'">
+                      {{ movimiento.tipo }}
+                    </span>
+                  </td>
                   <td>{{ movimiento.origen }}</td>
                   <td>{{ movimiento.referencia }}</td>
-                  <td>{{ movimiento.monto }}</td>
+                  <td>{{ movimiento.monto | number:'1.2-2' }}</td>
                 </tr>
               } @empty {
                 <tr>
-                  <td colspan="5">No hay movimientos registrados</td>
+                  <td colspan="5">No hay movimientos en este periodo</td>
                 </tr>
               }
             </tbody>

@@ -170,6 +170,7 @@ export class Catalogo implements OnInit, AfterViewInit {
   }
 
   cerrarSesion(): void {
+    this.carritoService.vaciar();
     this.authService.cerrarSesion();
     this.router.navigate(['/']);
   }

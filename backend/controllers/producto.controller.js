@@ -3,8 +3,7 @@ const productoService = require('../services/producto.service');
 // GET /api/productos  o  GET /api/productos?categoria=Café
 function obtenerProductos(req, res) {
   const categoria = req.query.categoria;
-
-  // el filtrado se hace en el servidor para no enviar al cliente registros que no necesita :>
+  //el filtrado se hace en el servidor para no enviar al cliente registros que no necesita :>
   if (categoria) {
     productoService.obtenerPorCategoria(categoria, (error, productos) => {
       if (error) {

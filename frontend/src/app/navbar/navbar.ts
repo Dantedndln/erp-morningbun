@@ -1,6 +1,7 @@
 import { Component } from '@angular/core';
 import { Router, RouterLink, RouterLinkActive } from '@angular/router';
 import { AuthService } from '../services/auth.service';
+import { CarritoService } from '../services/carrito.service';
 
 @Component({
   selector: 'app-navbar',
@@ -9,10 +10,11 @@ import { AuthService } from '../services/auth.service';
   styleUrl: './navbar.css'
 })
 export class Navbar {
-  constructor(private authService: AuthService, private router: Router) {}
+  constructor(private authService: AuthService, private router: Router, private carritoService: CarritoService) {}
 
   // Borra las credenciales locales y regresa al login
   cerrarSesion(): void {
+    this.carritoService.vaciar();
     this.authService.cerrarSesion();
     this.router.navigate(['/']);
   }

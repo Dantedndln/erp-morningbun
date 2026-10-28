@@ -19,7 +19,6 @@
   flex-wrap: wrap;
   gap: 16px;
 }
-
 .pestanas {
   display: flex;
   gap: 4px;
@@ -28,7 +27,6 @@
   padding: 4px;
   background-color: #FBF3E7;
 }
-
 .pestanas button {
   background: none;
   border: none;
@@ -38,11 +36,9 @@
   cursor: pointer;
   border-radius: 6px;
 }
-
 .pestanas button:hover {
   background-color: #EDE0CE;
 }
-
 .pestanas button.activa {
   background-color: #4A3427;
   color: #E8A33D;
@@ -171,4 +167,134 @@ td {
 .total {
   font-size: 17px;
   font-weight: 600;
+}
+.campo-vertical {
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 16px;
+}
+.campo-vertical label {
+  font-size: 13px;
+  margin-bottom: 6px;
+}
+.campo-vertical input {
+  padding: 9px 12px;
+  border: 1px solid #C4A87F;
+  border-radius: 6px;
+  background-color: #FFFFFF;
+  font-size: 14px;
+  width: 100%;
+}
+.campo-vertical input:focus {
+  outline: 2px solid #C0472B;
+}
+.mensaje-exito {
+  color: #3F7A4A;
+  font-size: 13px;
+  margin-bottom: 14px;
+  text-align: center;
+}
+
+/* Tarjeta de detalle de la compra */
+.tarjeta-ticket {
+  background-color: #FBF3E7;
+  border: 1px solid #3B2A1F;
+  border-radius: 14px;
+  padding: 28px;
+  width: 100%;
+  max-width: 420px;
+}
+.titulo-ticket {
+  font-size: 19px;
+  font-weight: 500;
+  text-align: center;
+  margin-bottom: 18px;
+}
+.dato-ticket {
+  font-size: 14px;
+  color: #6B5443;
+  margin-bottom: 4px;
+}
+.renglones-ticket {
+  margin: 18px 0;
+}
+.renglon-ticket {
+  display: flex;
+  justify-content: space-between;
+  font-size: 14px;
+  padding: 8px 0;
+  border-bottom: 1px solid #D9C4A9;
+}
+.total-ticket {
+  text-align: right;
+  font-size: 17px;
+  font-weight: 600;
+  margin-bottom: 20px;
+}
+
+/* Modales */
+.fondo-modal {
+  position: fixed;
+  inset: 0;
+  background-color: rgba(59, 42, 31, 0.55);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+  z-index: 100;
+  overflow-y: auto;
+}
+.marco-modal {
+  background-color: #D9B98C;
+  border-radius: 18px;
+  padding: 16px;
+  width: 100%;
+  max-width: 680px;
+}
+.panel-modal {
+  background-color: #FFFFFF;
+  border-radius: 14px;
+  padding: 28px;
+}
+.titulo-modal {
+  font-size: 19px;
+  font-weight: 500;
+  margin-bottom: 22px;
+  text-align: center;
+}
+.acciones-modal {
+  display: flex;
+  justify-content: center;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+.btn-secundario {
+  background-color: #FFFFFF;
+  color: #3B2A1F;
+  border: 1px solid #C4A87F;
+  border-radius: 6px;
+  padding: 10px 20px;
+  font-size: 14px;
+  cursor: pointer;
+}
+.btn-secundario:hover {
+  background-color: #EDE0CE;
+}
+.btn-peligro {
+  background-color: #8A2D1A;
+  color: #FFFFFF;
+  border: none;
+  border-radius: 6px;
+  padding: 10px 20px;
+  font-size: 14px;
+  cursor: pointer;
+}
+.btn-peligro:hover {
+  background-color: #6E2314;
+}
+.mensaje-error {
+  color: #C0472B;
+  font-size: 13px;
+  margin-bottom: 14px;
+  text-align: center;
 }

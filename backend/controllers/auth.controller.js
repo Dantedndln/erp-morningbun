@@ -3,33 +3,30 @@ const jwt = require('jsonwebtoken');
 require('dotenv').config();
 const usuarioService = require('../services/usuario.service');
 
-// POST /api/auth/login
-function login(req, res) {
+//POST /api/auth/login
+function login(req, res) { //lectura
   const { usuario, contrasena } = req.body;
-
   if (!usuario || !contrasena) {
     return res.status(400).json({ mensaje: 'Usuario y contraseña son obligatorios' });
   }
 
-  usuarioService.buscarPorUsuario(usuario, async (error, cuenta) => {
+  usuarioService.buscarPorUsuario(usuario, async (error, cuenta) => { //llamada
     if (error) {
       console.error('Error en login:', error);
-      return res.status(500).json({ mensaje: 'Error del servidor' });
+      return res.status(500).json({ mensaje: 'Error del servidor' }); //respuesta
     }
-
-    // No se especifica si falló el usuario o la contraseña, para no dar pistas ;>
+    //no se especifica si falló el usuario o la contraseña para no dar pistas ;>
     if (!cuenta) {
-      return res.status(401).json({ mensaje: 'Credenciales incorrectas' });
+      return res.status(401).json({ mensaje: 'Credenciales incorrectas' });//respuesta
     }
 
-    // bcrypt.compare cifra la contraseña recibida y la compara con el hash guardado
+    //bcrypt.compare cifra la contraseña recibida y la compara con el hash guardado
     const passwordValido = await bcrypt.compare(contrasena, cuenta.contrasena);
-
     if (!passwordValido) {
       return res.status(401).json({ mensaje: 'Credenciales incorrectas' });
     }
 
-    // El token lleva solo lo indispensable: id y rol. Nunca la contraseña
+    //el token lleva solo id y rol, nunca la contraseña
     const token = jwt.sign(
       { id: cuenta.id, rol: cuenta.rol },
       process.env.JWT_SECRET,
@@ -45,53 +42,49 @@ function login(req, res) {
   });
 }
 
-// POST /api/auth/registro
+//POST /api/auth/registro
 async function registro(req, res) {
   const { nombre, usuario, correo, contrasena, confirmar, aceptoTerminos } = req.body;
 
-  // Campos obligatorios
+  //campos obligatorios
   if (!nombre || !usuario || !correo || !contrasena) {
     return res.status(400).json({ mensaje: 'Todos los campos son obligatorios' });
   }
 
-  // La contraseña y su confirmación deben coincidir
+  //la contraseña y su confirmación deben coincidir
   if (contrasena !== confirmar) {
     return res.status(400).json({ mensaje: 'Las contraseñas no coinciden' });
   }
 
-  // Mínimo 8 caracteres y al menos una mayúscula
+  //mínimo 8 caracteres y al menos una mayúscula
   if (contrasena.length < 8 || !/[A-Z]/.test(contrasena)) {
     return res.status(400).json({
       mensaje: 'La contraseña debe tener al menos 8 caracteres y una mayúscula'
     });
   }
 
-  // Formato nombre@dominio.extensión
+  //formato de nombre@dominio.extensión
   if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(correo)) {
     return res.status(400).json({ mensaje: 'El correo no tiene un formato válido' });
   }
 
-  // Consentimiento explícito de términos y aviso de privacidad
+  //consentimiento explícito de términos y aviso de privacidad
   if (!aceptoTerminos) {
     return res.status(400).json({
       mensaje: 'Debe aceptar los términos y condiciones y el aviso de privacidad'
     });
   }
-
   usuarioService.existeUsuarioOCorreo(usuario, correo, async (error, existe) => {
     if (error) {
       console.error('Error en registro:', error);
       return res.status(500).json({ mensaje: 'Error del servidor' });
     }
-
     if (existe) {
       return res.status(409).json({ mensaje: 'El usuario o el correo ya están registrados' });
     }
-
     try {
-      // El 10 son las iteraciones de sal: a mayor número, mayor aleatoriedad
+      //el 10 son las iteraciones de sal, a mayor número, mayor aleatoriedad
       const passwordHash = await bcrypt.hash(contrasena, 10);
-
       usuarioService.crearUsuario(
         { nombre, usuario, correo, contrasena: passwordHash },
         (error) => {

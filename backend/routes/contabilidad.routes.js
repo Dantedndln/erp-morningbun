@@ -5,5 +5,6 @@ const { verificarSesion, verificarRol } = require('../middlewares/auth.middlewar
 
 router.get('/movimientos', verificarSesion, verificarRol('administrador'), contabilidadController.obtenerMovimientos);
 router.get('/resumen', verificarSesion, verificarRol('administrador'), contabilidadController.obtenerResumen);
+router.get('/grafica', verificarSesion, verificarRol('administrador'), contabilidadController.obtenerGrafica);
 
 module.exports = router;

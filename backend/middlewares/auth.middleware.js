@@ -1,8 +1,8 @@
 const jwt = require('jsonwebtoken');
 require('dotenv').config();
 
-//MIDDLEWARE DE AUTENTICACIÓN: ¿quién eres?
-//Lee el token del encabezado Authorization, lo verifica con la clave secreta y deja los datos del usuario en req.usuario 
+//middleware de autenticación
+//lee el token del encabezado Authorization, lo verifica con la clave secreta y deja los datos del usuario en req.usuario 
 //para el siguiente eslabón
 function verificarSesion(req, res, next) {
   const encabezado = req.headers['authorization'];
@@ -28,7 +28,7 @@ function verificarSesion(req, res, next) {
   }
 }
 
-//MIDDLEWARE DE AUTORIZACIÓN: ¿qué puedes hacer?
+//middleware de autorización
 //devuelve un middleware configurado con los roles que autoriza la ruta
 function verificarRol(...rolesPermitidos) {
   return function (req, res, next) {

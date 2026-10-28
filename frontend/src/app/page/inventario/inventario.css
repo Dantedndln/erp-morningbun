@@ -71,3 +71,153 @@ td {
   text-decoration: underline;
   color: #C0472B;
 }
+
+/* Modales */
+.fondo-modal {
+  position: fixed;
+  inset: 0;
+  background-color: rgba(59, 42, 31, 0.55);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+  z-index: 100;
+  overflow-y: auto;
+}
+.marco-modal {
+  background-color: #D9B98C;
+  border-radius: 18px;
+  padding: 16px;
+  width: 100%;
+  max-width: 680px;
+}
+.panel-modal {
+  background-color: #FFFFFF;
+  border-radius: 14px;
+  padding: 28px;
+}
+.titulo-modal {
+  font-size: 19px;
+  font-weight: 500;
+  margin-bottom: 22px;
+  text-align: center;
+}
+.rejilla-form {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 18px;
+  margin-bottom: 22px;
+}
+.rejilla-form .campo {
+  display: flex;
+  flex-direction: column;
+}
+.rejilla-form .ancho-completo {
+  grid-column: 1 / -1;
+}
+.rejilla-form label {
+  font-size: 13px;
+  margin-bottom: 6px;
+}
+.rejilla-form input,
+.rejilla-form select,
+.rejilla-form textarea {
+  padding: 9px 12px;
+  border: 1px solid #C4A87F;
+  border-radius: 6px;
+  background-color: #FFFFFF;
+  font-size: 14px;
+  font-family: inherit;
+  width: 100%;
+}
+.rejilla-form input:focus,
+.rejilla-form select:focus,
+.rejilla-form textarea:focus {
+  outline: 2px solid #C0472B;
+}
+.acciones-modal {
+  display: flex;
+  justify-content: center;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+.btn-secundario {
+  background-color: #FFFFFF;
+  color: #3B2A1F;
+  border: 1px solid #C4A87F;
+  border-radius: 6px;
+  padding: 10px 20px;
+  font-size: 14px;
+  cursor: pointer;
+}
+.btn-secundario:hover {
+  background-color: #EDE0CE;
+}
+.btn-peligro {
+  background-color: #8A2D1A;
+  color: #FFFFFF;
+  border: none;
+  border-radius: 6px;
+  padding: 10px 20px;
+  font-size: 14px;
+  cursor: pointer;
+}
+.btn-peligro:hover {
+  background-color: #6E2314;
+}
+.mensaje-error {
+  color: #C0472B;
+  font-size: 13px;
+  margin-bottom: 14px;
+  text-align: center;
+}
+
+/* Tarjeta de detalle */
+.tarjeta-detalle {
+  background-color: #FBF3E7;
+  border: 1px solid #3B2A1F;
+  border-radius: 14px;
+  width: 100%;
+  max-width: 400px;
+  overflow: hidden;
+}
+.imagen-detalle {
+  width: 100%;
+  height: 190px;
+  object-fit: cover;
+  display: block;
+  background-color: #F3E7D6;
+  border-bottom: 1px solid #3B2A1F;
+}
+.cuerpo-detalle {
+  padding: 24px;
+}
+.nombre-detalle {
+  font-size: 19px;
+  font-weight: 500;
+  margin-bottom: 4px;
+}
+.categoria-detalle {
+  font-size: 12px;
+  color: #8A7462;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  margin-bottom: 12px;
+}
+.descripcion-detalle {
+  font-size: 13px;
+  line-height: 1.6;
+  color: #6B5443;
+  margin-bottom: 16px;
+}
+.dato-detalle {
+  font-size: 15px;
+  margin-bottom: 10px;
+}
+.etiqueta-detalle {
+  font-weight: 600;
+  margin-right: 10px;
+}
+.cuerpo-detalle .acciones-modal {
+  margin-top: 20px;
+}

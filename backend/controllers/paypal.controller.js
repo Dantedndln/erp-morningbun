@@ -4,8 +4,8 @@ const ventaService = require('../services/venta.service');
 const comprobanteService = require('../services/comprobante.service');
 const correoService = require('../services/correo.service');
 
-// Almacenamiento temporal de las órdenes creadas y aún no capturadas
-// no se guardan en la base de datos porque la venta se registra únicamente cuando el pago ha sido confirmado
+//almacenamiento temporal de las órdenes creadas y aún no capturadas no se guardan en la base de datos porque la venta se 
+// registra únicamente cuando el pago ha sido confirmado
 const ordenes = new Map();
 
 // POST /api/paypal/orden
@@ -16,8 +16,7 @@ async function crearOrden(req, res) {
     if (!Array.isArray(carrito) || carrito.length === 0) {
       return res.status(400).json({ error: 'El carrito está vacío' });
     }
-    // Los precios se consultan en la base de datos, nunca se toman
-    // los importes que envía el cliente
+    //los precios se consultan en la base de datos, nunca se toman los importes que envía el cliente
     const ids = carrito.map(item => item.id);
     const productos = await productoService.obtenerPorIds(ids);
     let totalCentavos = 0;
@@ -38,7 +37,7 @@ async function crearOrden(req, res) {
         });
       }
 
-      // se trabaja en centavos para evitar errores de redondeo
+      //se trabaja en centavos para evitar errores de redondeo
       const precioCentavos = Math.round(Number(producto.precio) * 100);
       const subtotalCentavos = precioCentavos * item.cantidad;
       totalCentavos += subtotalCentavos;
@@ -56,7 +55,7 @@ async function crearOrden(req, res) {
     }
 
     const total = (totalCentavos / 100).toFixed(2);
-    // se solicita a PayPal la creación de la orden
+    //se solicita a PayPal la creación de la orden
     const orden = await paypalRequest('/v2/checkout/orders', 'POST', {
       intent: 'CAPTURE',
       purchase_units: [{
@@ -67,7 +66,7 @@ async function crearOrden(req, res) {
       }]
     });
 
-    // se guarda la orden junto con el detalle calculado en el servidor
+    //se guarda la orden junto con el detalle calculado en el servidor
     ordenes.set(orden.id, {
       total,
       moneda: 'MXN',
@@ -107,23 +106,22 @@ async function capturarOrden(req, res) {
       'POST'
     );
 
-    // se busca la captura completada dentro de la respuesta
+    //se busca la captura completada dentro de la respuesta
     const captura = resultado.purchase_units
       ?.flatMap(u => u.payments?.captures || [])
       .find(c => c.status === 'COMPLETED');
-    // se verifica que el importe y la moneda capturados coincidan con los de la orden generada
+    //se verifica que el importe y la moneda capturados coincidan con los de la orden generada
     const valido =
       resultado.id === orderId &&
       resultado.status === 'COMPLETED' &&
       captura?.amount?.currency_code === ordenLocal.moneda &&
       captura?.amount?.value === ordenLocal.total;
-
     if (!valido) {
       ordenLocal.estado = 'REVISION';
       return res.status(409).json({ error: 'Pago pendiente de verificación' });
     }
 
-    // ahora sí, y solo aquí, se registra la venta y se descuenta la existencia
+    //ahora sí, y solo aquí, se registra la venta y se descuenta la existencia
     const venta = await ventaService.registrarVenta({
       usuarioId: ordenLocal.usuarioId,
       clienteNombre: ordenLocal.clienteNombre,
@@ -134,11 +132,11 @@ async function capturarOrden(req, res) {
       detalles: ordenLocal.detalles
     });
 
-    // fecha del comprobante en formato aaaa-mm-dd
+    //fecha del comprobante en formato aaaa-mm-dd
     venta.fecha = new Date().toISOString().split('T')[0];
 
-    // se genera el comprobante y se envía por correo
-    // si el envío falla, la venta ya quedó registrada y el pago cobrado, por lo que el error se registra pero no 
+    //se genera el comprobante y se envía por correo
+    //si el envío falla, la venta ya quedó registrada y el pago cobrado, por lo que el error se registra pero no 
     // interrumpe la operación
     try {
       const xml = comprobanteService.generarComprobante(venta);
@@ -166,7 +164,7 @@ async function capturarOrden(req, res) {
   } catch (error) {
     console.error(error);
 
-    // no se asume que el pago falló porque puede haberse cobrado
+    //no se asume que el pago falló porque puede haberse cobrado
     const orden = ordenes.get(orderId);
     if (orden && orden.estado === 'PROCESANDO') {
       orden.estado = 'REVISION';

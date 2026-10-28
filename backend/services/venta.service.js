@@ -1,4 +1,4 @@
-// Consultas SQL del módulo de ventas
+//consultas SQL del módulo de ventas
 const db = require('../config/db');
 
 // Trae el historial de ventas
@@ -11,10 +11,12 @@ function obtenerVentas(callback) {
       v.cliente_nombre AS cliente,
       u.rol AS registradoPor,
       v.fecha,
-      v.total
+      v.total,
+      -- Si la venta no tiene orden de PayPal, se registró en mostrador
+      CASE WHEN v.paypal_order_id IS NULL THEN 'Efectivo' ELSE 'PayPal' END AS metodoPago
     FROM ventas v
     LEFT JOIN usuarios u ON v.usuario_id = u.id
-    ORDER BY v.fecha DESC
+    ORDER BY v.fecha DESC, v.id DESC
   `;
   db.query(sql, (error, resultados) => {
     if (error) { callback(error, null); return; }
@@ -83,7 +85,47 @@ function registrarVenta(venta) {
   });
 }
 
+// Detalle de una venta: su cabecera y sus renglones
+function obtenerDetalle(id, callback) {
+  const sqlCabecera = `
+    SELECT
+      v.id,
+      v.cliente_nombre AS cliente,
+      v.correo_cliente AS correo,
+      u.rol AS registradoPor,
+      v.fecha,
+      v.total,
+      v.paypal_order_id
+    FROM ventas v
+    LEFT JOIN usuarios u ON v.usuario_id = u.id
+    WHERE v.id = ?
+  `;
+
+  db.query(sqlCabecera, [id], (error, resultados) => {
+    if (error) { callback(error, null); return; }
+
+    if (resultados.length === 0) {
+      callback(null, null);
+      return;
+    }
+
+    const venta = resultados[0];
+
+    const sqlDetalle = `
+      SELECT nombre_producto, cantidad, precio_unitario, subtotal
+      FROM venta_detalle
+      WHERE venta_id = ?
+    `;
+
+    db.query(sqlDetalle, [id], (error, renglones) => {
+      if (error) { callback(error, null); return; }
+      callback(null, { ...venta, detalles: renglones });
+    });
+  });
+}
+
 module.exports = {
   obtenerVentas,
-  registrarVenta
+  registrarVenta,
+  obtenerDetalle
 };

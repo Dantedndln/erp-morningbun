@@ -1,13 +1,16 @@
 <div class="layout">
   <app-navbar />
+
   <main class="contenido">
     <header class="barra-superior">
       <h1 class="marca">MorningBun</h1>
     </header>
+
     <section class="cuerpo">
       <div class="fila-acciones">
-        <button class="btn-principal">Nuevo producto</button>
+        <button class="btn-principal" (click)="abrirNuevo()">Nuevo producto</button>
       </div>
+
       <div class="tabla-scroll">
         <table>
           <thead>
@@ -20,14 +23,20 @@
             </tr>
           </thead>
           <tbody>
-            @for (producto of productos(); track producto.id){
+            @for (producto of productos(); track producto.id) {
               <tr>
-              <td>{{ producto.nombre }}</td>
-              <td>{{ producto.categoria }}</td>
-              <td>{{ producto.precio }}</td>
-              <td>{{producto.stock}}</td>
-              <td><span class="enlace-accion">Ver detalles</span></td>
-            </tr>
+                <td>{{ producto.nombre }}</td>
+                <td>{{ producto.categoria }}</td>
+                <td>{{ producto.precio }}</td>
+                <td>{{ producto.stock }}</td>
+                <td>
+                  <span class="enlace-accion" (click)="abrirDetalle(producto)">Ver detalles</span>
+                </td>
+              </tr>
+            } @empty {
+              <tr>
+                <td colspan="5">No hay productos registrados</td>
+              </tr>
             }
           </tbody>
         </table>
@@ -35,3 +44,122 @@
     </section>
   </main>
 </div>
+
+<!-- Modal: alta y modificación de producto -->
+@if (modal() === 'formulario') {
+  <div class="fondo-modal" (click)="cerrarModal()">
+    <div class="marco-modal" (click)="$event.stopPropagation()">
+      <div class="panel-modal">
+        <h2 class="titulo-modal">
+          {{ editando() ? 'Modificar producto' : 'Agregar producto' }}
+        </h2>
+
+        <form (submit)="guardar($event)">
+          <div class="rejilla-form">
+            <div class="campo">
+              <label for="nombre">Nombre del producto</label>
+              <input type="text" id="nombre" name="nombre"
+                     [value]="seleccionado()?.nombre ?? ''" required>
+            </div>
+
+            <div class="campo">
+              <label for="categoria">Categoría del producto</label>
+              <select id="categoria" name="categoria" required>
+                <option value="">Selecciona una categoría</option>
+                @for (categoria of categorias; track categoria) {
+                  <option [value]="categoria"
+                          [selected]="seleccionado()?.categoria === categoria">
+                    {{ categoria }}
+                  </option>
+                }
+              </select>
+            </div>
+
+            <div class="campo">
+              <label for="precio">Precio del producto</label>
+              <input type="number" id="precio" name="precio" min="0" step="0.01"
+                     [value]="seleccionado()?.precio ?? ''" required>
+            </div>
+
+            <div class="campo">
+              <label for="stock">Stock del producto</label>
+              <input type="number" id="stock" name="stock" min="0"
+                     [value]="seleccionado()?.stock ?? 0" required>
+            </div>
+
+            <div class="campo ancho-completo">
+              <label for="imagen">Imagen del producto</label>
+              <!-- Se captura el nombre del archivo; la imagen se coloca
+                   manualmente en la carpeta public del proyecto -->
+              <input type="text" id="imagen" name="imagen"
+                     placeholder="productos/ejemplo.jpg"
+                     [value]="seleccionado()?.imagen ?? ''">
+            </div>
+
+            <div class="campo ancho-completo">
+              <label for="descripcion">Descripción del producto</label>
+              <textarea id="descripcion" name="descripcion" rows="3">{{ seleccionado()?.descripcion ?? '' }}</textarea>
+            </div>
+          </div>
+
+          @if (error()) {
+            <p class="mensaje-error">{{ error() }}</p>
+          }
+
+          <div class="acciones-modal">
+            <button type="submit" class="btn-principal">
+              {{ editando() ? 'Guardar cambios' : 'Añadir' }}
+            </button>
+            <button type="button" class="btn-secundario" (click)="cerrarModal()">Cancelar</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+}
+
+<!-- Modal: información del producto -->
+@if (modal() === 'detalle' && seleccionado()) {
+  <div class="fondo-modal" (click)="cerrarModal()">
+    <div class="tarjeta-detalle" (click)="$event.stopPropagation()">
+      <img
+        class="imagen-detalle"
+        [src]="seleccionado()!.imagen ? '/' + seleccionado()!.imagen : '/sin-imagen.png'"
+        [alt]="seleccionado()!.nombre">
+
+      <div class="cuerpo-detalle">
+        <h2 class="nombre-detalle">{{ seleccionado()!.nombre }}</h2>
+        <p class="categoria-detalle">{{ seleccionado()!.categoria }}</p>
+        <p class="descripcion-detalle">{{ seleccionado()!.descripcion }}</p>
+
+        <p class="dato-detalle">
+          <span class="etiqueta-detalle">STOCK:</span>
+          @if (seleccionado()!.stock > 0) {
+            {{ seleccionado()!.stock }}
+          } @else {
+            Terminado
+          }
+        </p>
+
+        <p class="dato-detalle">
+          <span class="etiqueta-detalle">Precio:</span>
+          {{ seleccionado()!.precio }}
+        </p>
+
+        @if (error()) {
+          <p class="mensaje-error">{{ error() }}</p>
+        }
+
+        <div class="acciones-modal">
+          <button class="btn-principal" (click)="abrirEditar(seleccionado()!)">
+            Modificar
+          </button>
+          <button class="btn-peligro" (click)="darDeBaja()">
+            Dar de baja
+          </button>
+          <button class="btn-secundario" (click)="cerrarModal()">Salir</button>
+        </div>
+      </div>
+    </div>
+  </div>
+}

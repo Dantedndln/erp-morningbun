@@ -339,7 +339,7 @@ paypal-button {
   margin: 18px 0;
 }
 
-/* La tarjeta ahora es clicable para ver el detalle */
+/* La tarjeta es clicable para ver el detalle */
 .tarjeta-producto {
   cursor: pointer;
   transition: transform 0.15s, box-shadow 0.15s;

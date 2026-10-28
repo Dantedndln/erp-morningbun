@@ -1,6 +1,5 @@
 <div class="layout">
   <app-navbar />
-
   <main class="contenido">
     <header class="barra-superior">
       <h1 class="marca">MorningBun</h1>
@@ -10,31 +9,29 @@
         <button [class.activa]="seccion() === 'historial'" (click)="seccion.set('historial')">Historial</button>
       </nav>
     </header>
-
     <section class="cuerpo">
-      <!-- Sección de la compra -->
+
+      <!-- sección de nueva compra -->
       @if (seccion() === 'compra') {
         <h2 class="titulo-seccion">Nueva compra</h2>
-
         <div class="panel-compra">
           <div class="fila-campos">
             <div class="campo">
               <label for="proveedor">Proveedor</label>
-              <select id="proveedor" name="proveedor">
-                <option value="">Selecciona un proveedor</option>
+              <select id="proveedor" (change)="seleccionarProveedor($event)">
+                <option value="0">Selecciona un proveedor</option>
                 @for (proveedor of proveedores(); track proveedor.id) {
                   <option [value]="proveedor.id">{{ proveedor.nombre }}</option>
                 }
               </select>
             </div>
-
             <div class="campo">
               <label for="fecha">Fecha</label>
-              <input type="date" id="fecha" name="fecha">
+              <input type="date" id="fecha" (change)="seleccionarFecha($event)">
             </div>
           </div>
-
-          <div class="fila-campos alinear-abajo">
+          <!-- captura de cada renglón -->
+          <form (submit)="agregarRenglon($event)" class="fila-campos alinear-abajo">
             <div class="campo">
               <label for="producto">Producto</label>
               <select id="producto" name="producto">
@@ -44,20 +41,16 @@
                 }
               </select>
             </div>
-
             <div class="campo campo-chico">
               <label for="cantidad">Cantidad</label>
-              <input type="number" id="cantidad" name="cantidad" min="1">
+              <input type="number" id="cantidad" name="cantidad" min="1" value="1">
             </div>
-
             <div class="campo campo-chico">
               <label for="costo">Costo unitario</label>
               <input type="number" id="costo" name="costo" min="0" step="0.01">
             </div>
-
-            <button class="btn-principal">Agregar producto</button>
-          </div>
-
+            <button type="submit" class="btn-principal">Agregar producto</button>
+          </form>
           <div class="tabla-scroll">
             <table class="tabla-renglones">
               <thead>
@@ -70,30 +63,42 @@
                 </tr>
               </thead>
               <tbody>
-                <tr>
-                  <td></td>
-                  <td></td>
-                  <td></td>
-                  <td></td>
-                  <td><span class="quitar">✕</span></td>
-                </tr>
+                @for (renglon of renglones(); track $index) {
+                  <tr>
+                    <td>{{ renglon.nombreProducto }}</td>
+                    <td>{{ renglon.cantidad }}</td>
+                    <td>{{ renglon.costoUnitario | number:'1.2-2' }}</td>
+                    <td>{{ renglon.subtotal | number:'1.2-2' }}</td>
+                    <td><span class="quitar" (click)="quitarRenglon($index)">✕</span></td>
+                  </tr>
+                } @empty {
+                  <tr>
+                    <td colspan="5">Agrega productos a la compra</td>
+                  </tr>
+                }
               </tbody>
             </table>
           </div>
 
+          @if (error()) {
+            <p class="mensaje-error">{{ error() }}</p>
+          }
+          @if (exito()) {
+            <p class="mensaje-exito">{{ exito() }}</p>
+          }
           <div class="pie-compra">
-            <p class="total">TOTAL:</p>
-            <button class="btn-principal">Registrar compra</button>
+            <p class="total">TOTAL: {{ total() | number:'1.2-2' }}</p>
+            <button class="btn-principal" (click)="registrarCompra()">Registrar compra</button>
           </div>
         </div>
       }
-      <!-- Sección de los distribuidores -->
+
+      <!-- sección de proveedores -->
       @if (seccion() === 'distribuidores') {
         <div class="encabezado-seccion">
           <h2 class="titulo-seccion">Proveedores</h2>
-          <button class="btn-principal">Nuevo proveedor</button>
+          <button class="btn-principal" (click)="abrirNuevoProveedor()">Nuevo proveedor</button>
         </div>
-
         <div class="tabla-scroll">
           <table>
             <thead>
@@ -112,9 +117,13 @@
                   <td>{{ proveedor.nombre }}</td>
                   <td>{{ proveedor.telefono }}</td>
                   <td>{{ proveedor.correo }}</td>
-                  <td><span class="enlace-accion">Editar / Eliminar</span></td>
+                  <td>
+                    <span class="enlace-accion" (click)="abrirEditarProveedor(proveedor)">
+                      Editar / Eliminar
+                    </span>
+                  </td>
                 </tr>
-              } @empty {<!-- El empty nos deja imprimir un mensaje cuando no tengamos datos, en toda la tabla y no en solo una fila al colapsarla-->
+              } @empty {
                 <tr>
                   <td colspan="5">No hay proveedores registrados</td>
                 </tr>
@@ -123,10 +132,10 @@
           </table>
         </div>
       }
-      <!-- Sección del historial, la tabla del historial -->
+
+      <!-- sección 3: historial -->
       @if (seccion() === 'historial') {
         <h2 class="titulo-seccion">Historial de compras</h2>
-
         <div class="tabla-scroll">
           <table>
             <thead>
@@ -143,11 +152,13 @@
                 <tr>
                   <td>{{ compra.id }}</td>
                   <td>{{ compra.proveedor }}</td>
-                  <td>{{ compra.fecha | date:'dd/MM/yyyy'}}</td>
+                  <td>{{ compra.fecha | date:'dd/MM/yyyy' }}</td>
                   <td>{{ compra.total }}</td>
-                  <td><span class="enlace-accion">Ver detalle</span></td>
+                  <td>
+                    <span class="enlace-accion" (click)="abrirDetalle(compra.id)">Ver detalle</span>
+                  </td>
                 </tr>
-              } @empty { <!-- El empty nos deja imprimir un mensaje cuando no tengamos datos-->
+              } @empty {
                 <tr>
                   <td colspan="5">No hay compras registradas</td>
                 </tr>
@@ -160,3 +171,76 @@
     </section>
   </main>
 </div>
+
+<!-- modal de alta y modificación de proveedor -->
+@if (modal() === 'proveedor') {
+  <div class="fondo-modal" (click)="cerrarModal()">
+    <div class="marco-modal" (click)="$event.stopPropagation()">
+      <div class="panel-modal">
+        <h2 class="titulo-modal">
+          {{ editandoProveedor() ? 'Modificar distribuidor' : 'Agregar distribuidor' }}
+        </h2>
+
+        <form (submit)="guardarProveedor($event)">
+          <div class="campo-vertical">
+            <label for="nombre-prov">Nombre:</label>
+            <input type="text" id="nombre-prov" name="nombre"
+                   [value]="proveedorSeleccionado()?.nombre ?? ''" required>
+          </div>
+
+          <div class="campo-vertical">
+            <label for="telefono-prov">Teléfono:</label>
+            <input type="text" id="telefono-prov" name="telefono"
+                   [value]="proveedorSeleccionado()?.telefono ?? ''">
+          </div>
+
+          <div class="campo-vertical">
+            <label for="correo-prov">Correo:</label>
+            <input type="email" id="correo-prov" name="correo"
+                   [value]="proveedorSeleccionado()?.correo ?? ''">
+          </div>
+
+          @if (error()) {
+            <p class="mensaje-error">{{ error() }}</p>
+          }
+
+          <div class="acciones-modal">
+            <button type="submit" class="btn-principal">
+              {{ editandoProveedor() ? 'Guardar cambios' : 'Agregar' }}
+            </button>
+
+            @if (editandoProveedor()) {
+              <button type="button" class="btn-peligro" (click)="darDeBajaProveedor()">
+                Eliminar
+              </button>
+            }
+
+            <button type="button" class="btn-secundario" (click)="cerrarModal()">Cancelar</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+}
+
+<!-- modal del detalle de la compra -->
+@if (modal() === 'detalle' && detalleCompra()) {
+  <div class="fondo-modal" (click)="cerrarModal()">
+    <div class="tarjeta-ticket" (click)="$event.stopPropagation()">
+      <h2 class="titulo-ticket">Detalle de la compra</h2>
+      <p class="dato-ticket">Folio: C-{{ detalleCompra()!.id }}</p>
+      <p class="dato-ticket">Proveedor: {{ detalleCompra()!.proveedor }}</p>
+      <p class="dato-ticket">Fecha: {{ detalleCompra()!.fecha | date:'dd/MM/yyyy' }}</p>
+      <div class="renglones-ticket">
+        @for (detalle of detalleCompra()!.detalles; track detalle.nombre_producto) {
+          <div class="renglon-ticket">
+            <span>[{{ detalle.cantidad }}] {{ detalle.nombre_producto }}</span>
+            <span>{{ detalle.subtotal }}</span>
+          </div>
+        }
+      </div>
+      <p class="total-ticket">Total: {{ detalleCompra()!.total }}</p>
+      <button class="btn-principal" (click)="cerrarModal()">Salir</button>
+    </div>
+  </div>
+}
